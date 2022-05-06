@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/style.css" />
+        <title>Categories</title>
+    </head>
+    <body>
+        <div class="container">
+            <header class="header">
+                <nav class="header__nav">
+                    <a href="/" class="header__link">Banners</a>
+                    <a href="categories" class="header__link header__link_active">Categories</a>
+                </nav>
+            </header>
+
+            <main class="main">
+                <aside class="sidebar">
+                    <header class="sidebar__header">Categories:</header>
+
+                    <section class="sidebar__content">
+                        <div class="sidebar__search">
+                            <input class="sidebar__search-input" type="text" placeholder="Enter category name..." />
+                            <span class="sidebar__search-icon"></span>
+                        </div>
+                        <div class="sidebar__menu">
+                            <a href="#" class="sidebar__menu-item">Arcade games</a>
+                            <a href="#" class="sidebar__menu-item">Card games</a>
+                            <a href="#" class="sidebar__menu-item">Humor</a>
+                            <a href="#" class="sidebar__menu-item sidebar__menu-item_active">Music</a>
+                        </div>
+                    </section>
+
+                    <footer class="sidebar__footer">
+                        <button class="sidebar__submit-button">Create new Category</button>
+                    </footer>
+                </aside>
+
+                <section class="content">
+                    <header class="content__header">
+                        <span class="content__header-text">Music ID: 4</span>
+                    </header>
+
+                    <div class="content__body">
+                        <div class="content__form">
+                            <div class="content__form-item">
+                                <div class="content__form-item-title">Name</div>
+                                <div class="content__form-item-content">
+                                    <input class="content__input" type="text" value="Music" />
+                                </div>
+                            </div>
+                            <div class="content__form-item">
+                                <div class="content__form-item-title">Request ID</div>
+                                <div class="content__form-item-content">
+                                    <input class="content__input" type="text" value="music" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <footer class="content__footer">
+                        <div class="content__buttons">
+                            <button class="content__button content__button_dark">Save</button>
+                            <button class="content__button content__button_red">Delete</button>
+                        </div>
+                    </footer>
+                </section>
+            </main>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/style.css" />
+        <title>Banners</title>
+    </head>
+    <body>
+        <div class="container">
+            <header class="header">
+                <nav class="header__nav">
+                    <a href="/" class="header__link header__link_active">Banners</a>
+                    <a href="categories" class="header__link">Categories</a>
+                </nav>
+            </header>
+
+            <main class="main">
+                <aside class="sidebar">
+                    <header class="sidebar__header">Banners:</header>
+
+                    <section class="sidebar__content">
+                        <div class="sidebar__search">
+                            <input class="sidebar__search-input" type="text" placeholder="Enter banner name...">
+                            <span class="sidebar__search-icon"></span>
+                        </div>
+                        <div class="sidebar__menu">
+                            <a href="1" class="sidebar__menu-item">Some banner</a>
+                            <a href="2" class="sidebar__menu-item">Second banner</a>
+                            <a href="3" class="sidebar__menu-item">New test banner</a>
+                        </div>
+                    </section>
+
+                    <footer class="sidebar__footer">
+                        <button class="sidebar__submit-button">Create new Banner</button>
+                    </footer>
+                </aside>
+
+                <section class="content">
+                    <header class="content__header">
+                        <span class="content__header-text">Create new banner</span>
+                    </header>
+
+                    <div class="content__body">
+                        <div class="content__form">
+                            <div class="content__form-item">
+                                <div class="content__form-item-title">Name</div>
+                                <div class="content__form-item-content">
+                                    <input class="content__input" type="text" value="some banner">
+                                </div>
+                            </div>
+                            <div class="content__form-item">
+                                <div class="content__form-item-title">Price</div>
+                                <div class="content__form-item-content">
+                                    <input class="content__input" type="text" value="9.99">
+                                </div>
+                            </div>
+                            <div class="content__form-item">
+                                <div class="content__form-item-title">Category</div>
+                                <div class="content__form-item-content">
+                                    <select class="content__select">
+                                        <option value="dog">Humor</option>
+                                        <option value="cat">Music</option>
+                                        <option value="hamster">Sport</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="content__form-item">
+                                <div class="content__form-item-title">Text</div>
+                                <div class="content__form-item-content">
+                                    <textarea class="content__textarea">
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid enim numquam accusantium cupiditate magnam quam maxime voluptatem saepe aut ipsa? Unde sapiente ea exercitationem? Voluptates repellat aspernatur aliquid quasi fugiat!
+                                    </textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <footer class="content__footer">
+                        <div class="content__buttons">
+                            <button class="content__button content__button_dark">Save</button>
+                            <button class="content__button content__button_red">Delete</button>
+                        </div>
+                    </footer>
+                    
+                    <div class="error">
+                        <span class="error__text">Banner with name "some banner" is already exist</span>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </body>
+</html>
