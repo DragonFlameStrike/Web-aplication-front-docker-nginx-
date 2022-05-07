@@ -40,7 +40,7 @@
                 <section class="content">
                     <form method="post">
                         <header class="content__header">
-                            <span class="content__header-text" th:text="${currCategory.get().name} + ' ' + ${currCategory.get().idCategory}"></span>
+                            <span class="content__header-text" th:text="${currCategory.name} + ' ' + ${currCategory.idCategory}"></span>
                         </header>
 
                         <div class="content__body">
@@ -48,13 +48,13 @@
                                 <div class="content__form-item">
                                     <div class="content__form-item-title">Name</div>
                                     <div class="content__form-item-content">
-                                        <input class="content__input" type="text" name="name" th:value="${currCategory.get().name}">
+                                        <input class="content__input" type="text" name="name" th:value="${currCategory.name}">
                                     </div>
                                 </div>
                                 <div class="content__form-item">
                                     <div class="content__form-item-title">Request ID</div>
                                     <div class="content__form-item-content">
-                                        <input class="content__input" type="text" name="idRequest" th:value="${currCategory.get().idRequest}">
+                                        <input class="content__input" type="text" name="idRequest" th:value="${currCategory.idRequest}">
                                     </div>
                                 </div>
                             </div>
