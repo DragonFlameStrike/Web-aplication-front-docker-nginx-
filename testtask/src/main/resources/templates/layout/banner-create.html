@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Banners</title>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <nav class="header__nav">
+            <a href="/" class="header__link header__link_active">Banners</a>
+            <a href="categories" class="header__link">Categories</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <aside class="sidebar">
+            <header class="sidebar__header">Banners:</header>
+
+            <section class="sidebar__content">
+                <div class="sidebar__search">
+                    <input class="sidebar__search-input" type="text" placeholder="Enter banner name...">
+                    <span class="sidebar__search-icon"></span>
+                </div>
+                <div class="sidebar__menu">
+                    <div th:each="element : ${banners}" class="sidebar__menu-item">
+                        <a th:href="'/'+${element.idBanner}" th:text="${element.name}"/>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="sidebar__footer">
+                <button class="sidebar__submit-button">Create new Banner</button>
+            </footer>
+        </aside>
+        <section class="content">
+            <form action="/banner/create" method="post">
+                <header class="content__header">
+                    <span class="content__header-text">Create new banner</span>
+                </header>
+                <div class="content__body">
+                    <div class="content__form">
+                        <div class="content__form-item">
+                            <div class="content__form-item-title">Name</div>
+                            <div class="content__form-item-content">
+                                <input class="content__input" type="text" name="name">
+                            </div>
+                        </div>
+                        <div class="content__form-item">
+                            <div class="content__form-item-title">Price</div>
+                            <div class="content__form-item-content">
+                                <input class="content__input" type="number" name="price">
+                            </div>
+                        </div>
+                        <div class="content__form-item">
+                            <div class="content__form-item-title">Category</div>
+                            <div class="content__form-item-content">
+                                <select class="content__select" name="categories">
+                                    <option value="dog">Humor</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="content__form-item">
+                            <div class="content__form-item-title">Text</div>
+                            <div class="content__form-item-content">
+                                        <textarea class="content__textarea" name="text"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="content__footer">
+                    <div class="content__buttons">
+                        <button type="submit" class="content__button content__button_dark">Save</button>
+<!--                        <button class="content__button content__button_red">Delete</button>-->
+                    </div>
+                </footer>
+                <div class="error">
+                    <span class="error__text">Banner with name "some banner" is already exist</span>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/css/style.css" />
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/style.css">
         <title>Categories</title>
     </head>
     <body>
@@ -12,7 +12,7 @@
             <header class="header">
                 <nav class="header__nav">
                     <a href="/" class="header__link">Banners</a>
-                    <a href="categories" class="header__link header__link_active">Categories</a>
+                    <a href="/categories" class="header__link header__link_active">Categories</a>
                 </nav>
             </header>
 
@@ -22,7 +22,7 @@
 
                     <section class="sidebar__content">
                         <div class="sidebar__search">
-                            <input class="sidebar__search-input" type="text" placeholder="Enter category name..." />
+                            <input class="sidebar__search-input" type="text" placeholder="Enter category name...">
                             <span class="sidebar__search-icon"></span>
                         </div>
                         <div class="sidebar__menu">
@@ -48,13 +48,13 @@
                             <div class="content__form-item">
                                 <div class="content__form-item-title">Name</div>
                                 <div class="content__form-item-content">
-                                    <input class="content__input" type="text" value="Music" />
+                                    <input class="content__input" type="text" value="Music">
                                 </div>
                             </div>
                             <div class="content__form-item">
                                 <div class="content__form-item-title">Request ID</div>
                                 <div class="content__form-item-content">
-                                    <input class="content__input" type="text" value="music" />
+                                    <input class="content__input" type="text" value="music">
                                 </div>
                             </div>
                         </div>

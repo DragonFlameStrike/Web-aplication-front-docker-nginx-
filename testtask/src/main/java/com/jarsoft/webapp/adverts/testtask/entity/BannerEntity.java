@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.ArrayList;
 
 @Entity
 public class BannerEntity {
@@ -12,8 +13,17 @@ public class BannerEntity {
     private Long IdBanner;
     private String name;
     private Long price;
+    private String text;
+    private String categories;
 
     public BannerEntity() {
+    }
+
+    public BannerEntity(String name, Long price, String text, String categories) {
+        this.name = name;
+        this.price = price;
+        this.text = text;
+        this.categories = categories;
     }
 
     public Long getIdBanner() {
@@ -38,5 +48,21 @@ public class BannerEntity {
 
     public void setPrice(Long price) {
         this.price = price;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getCategories() {
+        return categories;
+    }
+
+    public void setCategories(String categories) {
+        this.categories = categories;
     }
 }
