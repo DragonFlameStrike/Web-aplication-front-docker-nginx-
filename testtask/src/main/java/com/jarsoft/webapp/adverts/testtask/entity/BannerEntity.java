@@ -1,7 +1,5 @@
 package com.jarsoft.webapp.adverts.testtask.entity;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

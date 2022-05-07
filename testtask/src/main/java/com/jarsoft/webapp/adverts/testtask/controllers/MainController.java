@@ -10,11 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class MainController {
 
-//    @GetMapping("/")
-//    public String startPage(){
-//        return "layout/emptyView";
-//    }
-
     @GetMapping("/")
     public String mainView(HttpServletRequest request) {
         System.out.println(request.getRemoteAddr()); // IP ADDRESS
