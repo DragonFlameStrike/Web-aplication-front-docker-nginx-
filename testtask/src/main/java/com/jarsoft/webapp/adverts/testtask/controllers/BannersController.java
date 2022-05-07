@@ -1,13 +1,16 @@
 package com.jarsoft.webapp.adverts.testtask.controllers;
 
 import com.jarsoft.webapp.adverts.testtask.entity.BannerEntity;
+import com.jarsoft.webapp.adverts.testtask.entity.CategoryEntity;
 import com.jarsoft.webapp.adverts.testtask.repositories.BannerRepository;
+import com.jarsoft.webapp.adverts.testtask.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -17,6 +20,8 @@ public class BannersController {
     @Autowired
     private BannerRepository bannerRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
     /**
      * <h1> Application main page with banners</h1>
      * @param request for get IP and User AGent Info
@@ -41,9 +46,13 @@ public class BannersController {
     @GetMapping("/{bid}")
     public String show(@PathVariable("bid") Long bid, Model model) {
         Iterable<BannerEntity> banners = bannerRepository.findAll();
-        model.addAttribute("banners",banners);
+        model.addAttribute("banners", banners);
         BannerEntity currBanner = bannerRepository.findById(bid).orElseThrow();
-        model.addAttribute("currBanner",currBanner);
+        model.addAttribute("currBanner", currBanner);
+        Iterable<CategoryEntity> categories = categoryRepository.findAll();
+        model.addAttribute("categories", categories);
+        Iterable<CategoryEntity> currCategories = currBanner.getCategories();
+        model.addAttribute("currCategories", currCategories);
         return "layout/banner-edit";
     }
 
@@ -64,7 +73,7 @@ public class BannersController {
             @RequestParam String name,
             @RequestParam Long price,
             @RequestParam String text,
-            @RequestParam String categories){
+            @RequestParam List<CategoryEntity> categories){
         BannerEntity banner = bannerRepository.findById(bid).orElseThrow();
         if(action.equals("Save")){
             banner.setName(name);
@@ -88,7 +97,9 @@ public class BannersController {
     @GetMapping("/banner/create")
     public String create(Model model) {
         Iterable<BannerEntity> banners = bannerRepository.findAll();
+        Iterable<CategoryEntity> categories = categoryRepository.findAll();
         model.addAttribute("banners",banners);
+        model.addAttribute("categories",categories);
         return "layout/banner-create";
     }
     /**
@@ -104,7 +115,7 @@ public class BannersController {
                              @RequestParam String name,
                              @RequestParam Long price,
                              @RequestParam String text,
-                             @RequestParam String categories){
+                             @RequestParam List<CategoryEntity> categories){
         BannerEntity banner = new BannerEntity(name,price,text,categories);
         bannerRepository.save(banner);
         return "redirect:/";

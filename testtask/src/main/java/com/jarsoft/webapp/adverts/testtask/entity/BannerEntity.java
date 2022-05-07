@@ -1,9 +1,9 @@
 package com.jarsoft.webapp.adverts.testtask.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 
 // Create Table BannerEntity in MySQL Database
@@ -16,16 +16,21 @@ public class BannerEntity {
     private String name;
     private Long price;
     private String text;
-    private String categories;
+    @ManyToMany
+    @JoinTable(
+            name = "bannersandcategories",
+            joinColumns = @JoinColumn(name = "IdBanner"),
+            inverseJoinColumns = @JoinColumn(name = "IdCategory"))
+    private List<CategoryEntity> categories = new ArrayList<>();
 
     public BannerEntity() {
     }
 
-    public BannerEntity(String name, Long price, String text, String categories) {
+    public BannerEntity(String name, Long price, String text, List<CategoryEntity> categories) {
         this.name = name;
         this.price = price;
         this.text = text;
-        this.categories = categories;
+        this.categories.addAll(categories);
     }
 
     public Long getIdBanner() {
@@ -34,6 +39,10 @@ public class BannerEntity {
 
     public void setIdBanner(Long idBanner) {
         IdBanner = idBanner;
+    }
+
+    public List<CategoryEntity> getCategories() {
+        return categories;
     }
 
     public String getName() {
@@ -60,11 +69,7 @@ public class BannerEntity {
         this.text = text;
     }
 
-    public String getCategories() {
-        return categories;
-    }
-
-    public void setCategories(String categories) {
-        this.categories = categories;
+    public void setCategories(List<CategoryEntity> categories) {
+        this.categories=categories;
     }
 }

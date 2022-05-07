@@ -57,9 +57,9 @@
                         </div>
                         <div class="content__form-item">
                             <div class="content__form-item-title">Category</div>
-                            <div class="content__form-item-content">
-                                <select class="content__select" name="categories">
-                                    <option value="dog">Humor</option>
+                            <div class="content__form-item-content" >
+                                <select class="content__select" name="categories" multiple="multiple" >
+                                    <option th:each="element : ${categories}" th:value="${element.idCategory}" th:text="${element.name}" ></option>
                                 </select>
                             </div>
                         </div>
