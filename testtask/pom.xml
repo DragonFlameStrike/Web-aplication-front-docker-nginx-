@@ -59,6 +59,14 @@
 			<artifactId>thymeleaf-spring5</artifactId>
 			<version>3.0.15.RELEASE</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.eirslett/frontend-maven-plugin -->
+		<dependency>
+			<groupId>com.github.eirslett</groupId>
+			<artifactId>frontend-maven-plugin</artifactId>
+			<version>1.12.1</version>
+		</dependency>
+
+
 
 		<!--		<dependency>-->
 <!--			<groupId>org.springframework.security</groupId>-->
@@ -68,12 +76,49 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+				</plugin>
+				<!-- tag::frontend-maven-plugin[] -->
+				<plugin>
+					<groupId>com.github.eirslett</groupId>
+					<artifactId>frontend-maven-plugin</artifactId>
+					<version>1.9.1</version>
+					<configuration>
+						<installDirectory>target</installDirectory>
+					</configuration>
+					<executions>
+						<execution>
+							<id>install node and npm</id>
+							<goals>
+								<goal>install-node-and-npm</goal>
+							</goals>
+							<configuration>
+								<nodeVersion>v12.14.0</nodeVersion>
+								<npmVersion>6.13.4</npmVersion>
+							</configuration>
+						</execution>
+						<execution>
+							<id>npm install</id>
+							<goals>
+								<goal>npm</goal>
+							</goals>
+							<configuration>
+								<arguments>install</arguments>
+							</configuration>
+						</execution>
+						<execution>
+							<id>webpack build</id>
+							<goals>
+								<goal>webpack</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<!-- end::frontend-maven-plugin[] -->
+			</plugins>
 	</build>
 
 </project>

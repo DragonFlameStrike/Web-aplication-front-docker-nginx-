@@ -5,6 +5,7 @@ import com.jarsoft.webapp.adverts.testtask.entity.CategoryEntity;
 import com.jarsoft.webapp.adverts.testtask.repositories.BannerRepository;
 import com.jarsoft.webapp.adverts.testtask.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 
-@Controller
-@RequestMapping()
+@RestController()
+@RequestMapping("/api")
 public class BannersController {
     @Autowired
     private BannerRepository bannerRepository;
@@ -25,35 +26,29 @@ public class BannersController {
     /**
      * <h1> Application main page with banners</h1>
      * @param request for get IP and User AGent Info
-     * @param model for insert data in html
-     * @return bannerEmptyView.html
+     * @return bannersList
      */
     @GetMapping("/")
-    public String mainView(HttpServletRequest request,Model model) {
+    public List<BannerEntity> mainView(HttpServletRequest request) {
         System.out.println(request.getRemoteAddr()); // IP ADDRESS
         System.out.println(request.getHeader("User-Agent")); // USER AGENT
         Iterable<BannerEntity> banners = bannerRepository.findAll();
-        model.addAttribute("banners",banners);
-        return "layout/bannerEmptyView";
+        return Streamable.of(banners).toList();
     }
 
     /**
      * <h1> Application page with banners and edit list for current</h1>
      * @param bid for define current banner
-     * @param model for insert data in html
-     * @return banner-edit.html
+     * @return currBanner
      */
     @GetMapping("/{bid}")
-    public String show(@PathVariable("bid") Long bid, Model model) {
-        Iterable<BannerEntity> banners = bannerRepository.findAll();
-        model.addAttribute("banners", banners);
+    public BannerEntity show(@PathVariable("bid") Long bid, Model model) {
         BannerEntity currBanner = bannerRepository.findById(bid).orElseThrow();
-        model.addAttribute("currBanner", currBanner);
-        Iterable<CategoryEntity> categories = categoryRepository.findAll();
-        model.addAttribute("categories", categories);
-        Iterable<CategoryEntity> currCategories = currBanner.getCategories();
-        model.addAttribute("currCategories", currCategories);
-        return "layout/banner-edit";
+//        Iterable<CategoryEntity> categories = categoryRepository.findAll();
+//        model.addAttribute("categories", categories);
+//        Iterable<CategoryEntity> currCategories = currBanner.getCategories();
+//        model.addAttribute("currCategories", currCategories);
+        return currBanner;
     }
 
     /**

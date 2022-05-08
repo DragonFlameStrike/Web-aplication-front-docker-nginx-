@@ -26,8 +26,8 @@
                             <span class="sidebar__search-icon"></span>
                         </div>
                         <div class="sidebar__menu">
-                            <div th:each="element : ${banners}" class="sidebar__menu-item">
-                                <a th:href="'/'+${element.idBanner}" th:text="${element.name}"/>
+                            <div class="sidebar__menu">
+                                <div id="bannersBar"></div>
                             </div>
                         </div>
                     </section>
@@ -37,55 +37,9 @@
                     </footer>
                 </aside>
 
-                <section class="content">
-                    <form method="post">
-                        <header class="content__header">
-                            <span class="content__header-text">Edit banner</span>
-                        </header>
-                        <div class="content__body">
-                            <div class="content__form">
-                                <div class="content__form-item">
-                                    <div class="content__form-item-title">Name</div>
-                                    <div class="content__form-item-content">
-                                        <input class="content__input" type="text" name="name" th:value="${currBanner.name}">
-                                    </div>
-                                </div>
-                                <div class="content__form-item">
-                                    <div class="content__form-item-title">Price</div>
-                                    <div class="content__form-item-content">
-                                        <input class="content__input" type="text" name="price" th:value="${currBanner.price}">
-                                    </div>
-                                </div>
-                                <div class="content__form-item">
-                                    <div class="content__form-item-title">Category</div>
-                                    <div class="content__form-item-content">
-                                        <select class="content__select" name="categories" multiple="multiple" >
-                                            <option th:each="element : ${categories}" th:selected="(${#lists.contains(currCategories,element)})"
-                                                    th:value="${element.idCategory}" th:text="${element.name}" ></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="content__form-item">
-                                    <div class="content__form-item-title">Text</div>
-                                    <div class="content__form-item-content">
-                                        <textarea class="content__textarea" name="text" th:text="${currBanner.text}"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <footer class="content__footer">
-                            <div class="content__buttons">
-                                <button type="submit" name="action" value="Save" class="content__button content__button_dark">Save</button>
-                                <button type="submit" name="action" value="Delete" class="content__button content__button_red">Delete</button>
-                            </div>
-                        </footer>
-
-                        <div class="error">
-                            <span class="error__text">Banner with name "some banner" is already exist</span>
-                        </div>
-                    </form>
-                </section>
+                <div class="content">
+                    <div id="mainField"></div>
+                </div>
             </main>
         </div>
     </body>

@@ -1,5 +1,7 @@
 package com.jarsoft.webapp.adverts.testtask.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,9 @@ public class CategoryEntity {
     private Long IdCategory;
     private String name;
     private String IdRequest;
+
     @ManyToMany(mappedBy = "categories")
+    @JsonBackReference
     List<BannerEntity> banners = new ArrayList<>();
 
     public CategoryEntity() {

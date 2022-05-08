@@ -1,5 +1,7 @@
 package com.jarsoft.webapp.adverts.testtask.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ public class BannerEntity {
             name = "bannersandcategories",
             joinColumns = @JoinColumn(name = "IdBanner"),
             inverseJoinColumns = @JoinColumn(name = "IdCategory"))
+    @JsonManagedReference
     private List<CategoryEntity> categories = new ArrayList<>();
 
     public BannerEntity() {
@@ -71,5 +74,15 @@ public class BannerEntity {
 
     public void setCategories(List<CategoryEntity> categories) {
         this.categories=categories;
+    }
+
+    @Override
+    public String toString() {
+        return "BannerEntity{" +
+                "IdBanner=" + IdBanner +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", text='" + text + '\'' +
+                '}';
     }
 }

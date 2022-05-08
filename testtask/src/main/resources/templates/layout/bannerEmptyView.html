@@ -16,7 +16,7 @@
                 </nav>
             </header>
 
-            <main class="main">
+            <main class="main" >
                 <aside class="sidebar">
                     <header class="sidebar__header">Banners:</header>
 
@@ -26,21 +26,18 @@
                             <span class="sidebar__search-icon"></span>
                         </div>
                         <div class="sidebar__menu">
-                            <div th:each="element : ${banners}" class="sidebar__menu-item">
-                                <a th:href="'/'+${element.idBanner}" th:text="${element.name}"/>
-                            </div>
+                            <div id="bannersBar"></div>
                         </div>
                     </section>
 
                     <footer class="sidebar__footer">
-                        <button class="sidebar__submit-button" onclick="window.location.href='/banner/create'">Create new Banner</button>
+                        <button class="sidebar__submit-button" onclick="window.location.href='/create'">Create new Banner</button>
                     </footer>
                 </aside>
-
-                <section class="content content_center">
-                    Choose an action.
-                </section>
+                <div id="mainField"  class="content" ></div>
+                <script src="built/bundle.js"></script>
             </main>
         </div>
     </body>
 </html>
+<!--class="content content_center"-->
