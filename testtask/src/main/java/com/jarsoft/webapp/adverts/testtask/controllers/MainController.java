@@ -29,4 +29,9 @@ public class MainController {
         return "layout/bannerEmptyView";
     }
 
+    @RequestMapping(value = "/{bid}", method = RequestMethod.DELETE)
+    public String deletePage() {
+        return "layout/bannerEmptyView";
+    }
+
 }

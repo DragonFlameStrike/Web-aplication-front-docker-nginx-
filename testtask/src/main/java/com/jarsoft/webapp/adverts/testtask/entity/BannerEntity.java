@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,11 +14,11 @@ import java.util.Set;
 
 // Create Table BannerEntity in MySQL Database
 @Entity
-
 public class BannerEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_banner",nullable = false)
     private Long IdBanner;
     private String name;
     private Long price;
@@ -80,15 +81,5 @@ public class BannerEntity {
 
     public void setCategories(List<CategoryEntity> categories) {
         this.categories=categories;
-    }
-
-    @Override
-    public String toString() {
-        return "BannerEntity{" +
-                "IdBanner=" + IdBanner +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", text='" + text + '\'' +
-                '}';
     }
 }

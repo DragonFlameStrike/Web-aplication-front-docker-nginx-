@@ -19,17 +19,15 @@ import EmptyFieldComponent from "./components/EmptyFieldComponent.jsx";
 class  MainFieldApp extends React.Component {
     render() {
         return (
-            <div>
                 <Router>
-                    <div className="container">
-                        <Switch>
-                            <Route path="/" exact component={EmptyFieldComponent}/>
-                            <Route path="/create" component={BannerCreateComponent}/>
-                            <Route path="/:bid" component={BannerEditComponent}/>
-                        </Switch>
-                    </div>
+
+                    <Switch>
+                        <Route path="/" exact component={EmptyFieldComponent}/>
+                        <Route path="/create" component={BannerCreateComponent}/>
+                        <Route path="/:bid" component={BannerEditComponent}/>
+                    </Switch>
+
                 </Router>
-            </div>
         );
     }
 }
@@ -39,18 +37,15 @@ ReactDOM.render(
 )
 
 class BannersBarApp extends React.Component { // <1>
-
     constructor(props) {
         super(props);
         this.state = {banners: []};
     }
-
     componentDidMount() { // <2>
         BannerService.getBanners().then(r => {
             this.setState({banners: r.data});
         });
     }
-
     render() { // <3>
         return (
             <BannerListComponent banners={this.state.banners}/>
@@ -58,7 +53,6 @@ class BannersBarApp extends React.Component { // <1>
     }
 }
 ReactDOM.render(
-
     <BannersBarApp />,
     document.getElementById('bannersBar')
 )

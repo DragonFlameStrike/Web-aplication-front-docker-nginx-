@@ -2,6 +2,7 @@ package com.jarsoft.webapp.adverts.testtask.controllers;
 
 import com.jarsoft.webapp.adverts.testtask.entity.BannerEntity;
 import com.jarsoft.webapp.adverts.testtask.entity.CategoryEntity;
+import com.jarsoft.webapp.adverts.testtask.exception.ResourceNotFoundException;
 import com.jarsoft.webapp.adverts.testtask.repositories.BannerRepository;
 import com.jarsoft.webapp.adverts.testtask.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +41,6 @@ public class BannersController {
 
     @PostMapping("/{bid}")
     public ResponseEntity<BannerEntity> updateBanner(@PathVariable Long bid, @RequestBody BannerEntity bannerDetails){
-          System.out.println(bannerDetails.getClass());
           BannerEntity banner = bannerRepository.findById(bid).orElseThrow();
           banner.setName(bannerDetails.getName());
           banner.setPrice(bannerDetails.getPrice());
@@ -54,4 +55,17 @@ public class BannersController {
     public String create() {
         return "";
     }
+    @PostMapping("/create")
+    public BannerEntity createBanner(@RequestBody BannerEntity banner) {
+        System.out.println(banner);
+        return bannerRepository.save(banner);
+    }
+    @DeleteMapping("/{bid}")
+    public ResponseEntity<Boolean> deleteBanner(@PathVariable Long bid){
+        BannerEntity banner = bannerRepository.findById(bid)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not exist with id :" + bid));
+        bannerRepository.delete(banner);
+        return ResponseEntity.ok(true);
+    }
+
 }
