@@ -1,6 +1,8 @@
 package com.jarsoft.webapp.adverts.testtask.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.Set;
 
 // Create Table CategoryEntity in MySQL Database
 @Entity
+
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +20,7 @@ public class CategoryEntity {
     private String IdRequest;
 
     @ManyToMany(mappedBy = "categories")
-    @JsonBackReference
+
     List<BannerEntity> banners = new ArrayList<>();
 
     public CategoryEntity() {

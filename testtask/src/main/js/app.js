@@ -24,8 +24,8 @@ class  MainFieldApp extends React.Component {
                     <div className="container">
                         <Switch>
                             <Route path="/" exact component={EmptyFieldComponent}/>
-                            <Route path="/:bid" component={BannerEditComponent}/>
                             <Route path="/create" component={BannerCreateComponent}/>
+                            <Route path="/:bid" component={BannerEditComponent}/>
                         </Switch>
                     </div>
                 </Router>
@@ -37,8 +37,6 @@ ReactDOM.render(
     <MainFieldApp />,
     document.getElementById('mainField')
 )
-
-
 
 class BannersBarApp extends React.Component { // <1>
 
@@ -59,10 +57,6 @@ class BannersBarApp extends React.Component { // <1>
         )
     }
 }
-
-// end::employee[]
-
-// tag::render[]
 ReactDOM.render(
 
     <BannersBarApp />,

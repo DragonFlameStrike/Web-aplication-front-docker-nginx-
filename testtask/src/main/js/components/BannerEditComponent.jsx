@@ -14,9 +14,13 @@ class BannerEditComponent extends React.Component{
             id: this.props.match.params.bid,
             name: '',
             price: '',
-            text: ''
+            text: '',
+            categories: []
         }
         this.changeName = this.changeName.bind(this);
+        this.changePrice = this.changePrice.bind(this);
+        this.changeCategories = this.changeCategories.bind(this);
+        this.changeText = this.changeText.bind(this);
     }
     componentDidMount() {
         BannerService.getBannerById(this.state.id).then((res) => {
@@ -24,14 +28,36 @@ class BannerEditComponent extends React.Component{
             this.setState({
                 name: banner.name,
                 price: banner.price,
-                text: banner.text
+                text: banner.text,
+                categories: banner.categories
             });
         });
     }
 
     changeName = (event) => {
-
+        this.setState({name: event.target.value});
     };
+
+    changePrice= (event) => {
+        this.setState({price: event.target.value});
+    }
+
+    changeCategories= (event) => {
+        this.setState({categories: event.target.value});
+    }
+    changeText= (event) => {
+        this.setState({text: event.target.value});
+    }
+    saveBanner =(e) => {
+        e.preventDefault();
+        let banner = {id:this.state.id, name: this.state.name.toString(), price: parseInt(this.state.price),
+            categories: this.state.categories, text:this.state.text.toString()};
+        BannerService.updateBanner(banner, this.state.id).then( res => {
+            this.props.history.push('/');
+            window.location.reload();
+        });
+    }
+
     render() {
         return (
             <form>
@@ -51,23 +77,25 @@ class BannerEditComponent extends React.Component{
                             <div className="content__form-item-title">Price</div>
                             <div className="content__form-item-content">
                                 <input className="content__input" type="number" name="price" value={this.state.price}
-                                       onChange={this.changeName}/>
+                                       onChange={this.changePrice}/>
                             </div>
                         </div>
-                        {/*<div className="content__form-item">*/}
-                        {/*    <div className="content__form-item-title">Category</div>*/}
-                        {/*    <div className="content__form-item-content">*/}
-                        {/*        <select className="content__select" name="categories" multiple="multiple">*/}
-                        {/*            <option th:each="element : ${categories}" th:value="${element.idCategory}"*/}
-                        {/*                    th:text="${element.name}"></option>*/}
-                        {/*        </select>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
+                        <div className="content__form-item">
+                            <div className="content__form-item-title">Category</div>
+                            <div className="content__form-item-content">
+                                <select className="content__select" name="categories" multiple="multiple">
+                                    {/*<option th:each="element : ${categories}" th:value="${element.idCategory}"*/}
+                                    {/*        th:text="${element.name}"></option>*/}
+                                    <input className="content__input" type="text" name="categories" value={this.state.categories}
+                                           onChange={this.changeCategories}/>
+                                </select>
+                            </div>
+                        </div>
                         <div className="content__form-item">
                             <div className="content__form-item-title">Text</div>
                             <div className="content__form-item-content">
                             <textarea className="content__textarea" name="text" value={this.state.text}
-                                      onChange={this.changeName}>{this.state.text}</textarea>
+                                      onChange={this.changeText}>{this.state.text}</textarea>
                             </div>
                         </div>
                     </div>
@@ -75,7 +103,7 @@ class BannerEditComponent extends React.Component{
 
                 <footer className="content__footer">
                     <div className="content__buttons">
-                        <button type="submit" className="content__button content__button_dark">Save</button>
+                        <button type="submit" className="content__button content__button_dark" onClick={this.saveBanner} >Save</button>
                         {/*<button class="content__button content__button_red">Delete</button>*/}
                     </div>
                 </footer>

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller()
 public class MainController {
@@ -14,13 +15,17 @@ public class MainController {
         return "layout/bannerEmptyView";
     }
 
-    @RequestMapping(value = "/{bid}")
-    public String editPage(Model model, @PathVariable("bid") int bid) {
-        model.addAttribute("bid",bid);
-        return "layout/bannerEmptyView";
-    }
     @RequestMapping(value = "/create")
     public String createPage() {
+        return "layout/bannerEmptyView";
+    }
+
+    @RequestMapping(value = "/{bid}")
+    public String editPage() {
+        return "layout/bannerEmptyView";
+    }
+    @RequestMapping(value = "/{bid}", method = RequestMethod.POST)
+    public String updatePage() {
         return "layout/bannerEmptyView";
     }
 

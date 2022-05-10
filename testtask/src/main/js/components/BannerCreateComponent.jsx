@@ -3,7 +3,7 @@ import app from "../app";
 
 const React = require("react");
 
-class BannerEditComponent extends React.Component{
+class BannerCreateComponent extends React.Component{
     render() {
         return (
             <form>
@@ -24,15 +24,16 @@ class BannerEditComponent extends React.Component{
                                 <input className="content__input" type="number" name="price"/>
                             </div>
                         </div>
-                        {/*<div className="content__form-item">*/}
-                        {/*    <div className="content__form-item-title">Category</div>*/}
-                        {/*    <div className="content__form-item-content">*/}
-                        {/*        <select className="content__select" name="categories" multiple="multiple">*/}
-                        {/*            <option th:each="element : ${categories}" th:value="${element.idCategory}"*/}
-                        {/*                    th:text="${element.name}"></option>*/}
-                        {/*        </select>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
+                        <div className="content__form-item">
+                            <div className="content__form-item-title">Category</div>
+                            <div className="content__form-item-content">
+                                <select className="content__select" name="categories" multiple="multiple">
+                                    {/*<option th:each="element : ${categories}" th:value="${element.idCategory}"*/}
+                                    {/*        th:text="${element.name}"></option>*/}
+                                    <input className="content__input" type="text" name="categories"/>
+                                </select>
+                            </div>
+                        </div>
                         <div className="content__form-item">
                             <div className="content__form-item-title">Text</div>
                             <div className="content__form-item-content">
@@ -55,4 +56,4 @@ class BannerEditComponent extends React.Component{
         )
     }
 }
-export default BannerEditComponent
+export default BannerCreateComponent

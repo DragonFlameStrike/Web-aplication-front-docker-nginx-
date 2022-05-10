@@ -1,6 +1,9 @@
 package com.jarsoft.webapp.adverts.testtask.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ import java.util.Set;
 
 // Create Table BannerEntity in MySQL Database
 @Entity
+
 public class BannerEntity {
 
     @Id
@@ -23,13 +27,15 @@ public class BannerEntity {
             name = "bannersandcategories",
             joinColumns = @JoinColumn(name = "IdBanner"),
             inverseJoinColumns = @JoinColumn(name = "IdCategory"))
-    @JsonManagedReference
+
+    @JsonIgnoreProperties("banners")
     private List<CategoryEntity> categories = new ArrayList<>();
 
     public BannerEntity() {
     }
 
     public BannerEntity(String name, Long price, String text, List<CategoryEntity> categories) {
+        super();
         this.name = name;
         this.price = price;
         this.text = text;

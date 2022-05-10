@@ -11,6 +11,10 @@ class BannerService{
         return axios.get(BANNER_API_BASE_URL + id);
     }
 
+    updateBanner(banner, id) {
+        console.log(banner)
+        return axios.post(BANNER_API_BASE_URL + id, banner);
+    }
 }
 
 export default new BannerService()
