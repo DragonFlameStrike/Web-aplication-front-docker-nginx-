@@ -15,10 +15,12 @@ class BannerService{
     updateBanner(banner, id) {
         console.log(banner,"update")
         return axios.post(BANNER_API_BASE_URL + id, banner);
+
     }
     createBanner(banner){
         console.log(banner,"create")
-        return axios.post(BANNER_API_BASE_URL + 'create', banner);
+        return axios.post(BANNER_API_BASE_URL + 'create', banner)
+
     }
     deleteBanner(id){
         console.log(id,"delete")

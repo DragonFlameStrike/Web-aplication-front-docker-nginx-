@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +23,10 @@ public class BannerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_banner",nullable = false)
     private Long IdBanner;
+    @NotEmpty(message = "Name cannot be null")
     private String name;
+    @NotNull
+    @PositiveOrZero(message = "Price should be positive number")
     private Long price;
     private String text;
     @ManyToMany

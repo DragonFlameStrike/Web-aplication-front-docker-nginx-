@@ -16,7 +16,9 @@ class BannerEditComponent extends React.Component{
             oldname: '',
             price: '',
             text: '',
-            categories: []
+            categories: [],
+            error: false,
+            sameNameError: false
         }
         this.changeName = this.changeName.bind(this);
         this.changePrice = this.changePrice.bind(this);
@@ -52,15 +54,21 @@ class BannerEditComponent extends React.Component{
     }
     saveBanner=(e) => {
         e.preventDefault();
-
+        this.setState({ error: false});
         let banner = {name: this.state.name.toString(), price: parseInt(this.state.price),
             categories: this.state.categories, text:this.state.text.toString()};
-        BannerService.updateBanner(banner, this.state.id).then( res => {
-            this.props.history.push('/');
-            window.location.reload();
-
-        });
-
+        BannerService.updateBanner(banner, this.state.id)
+            .then((response) => {
+                console.log(this.state.error);
+                if(this.state.error === false) {
+                    this.props.history.push('/');
+                    window.location.reload();
+                }
+            })
+            .catch((error) => {
+                this.setState({error: true});
+                console.log(this.state.error);
+            })
     }
     deleteBanner=(e) => {
         e.preventDefault();
@@ -68,6 +76,22 @@ class BannerEditComponent extends React.Component{
             this.props.history.push('/');
             window.location.reload();
         });
+    }
+    errorView = (e) => {
+        if(this.state.error === true){
+            return (
+            <div className="error">
+                <span className="error__text">Wrong input</span>
+            </div>
+            )
+        }
+        if(this.state.sameNameError){
+            return (
+                <div className="error">
+                    <span className="error__text">Banner with name "some banner" is already exist</span>
+                </div>
+            )
+        }
     }
 
     render() {
@@ -122,11 +146,10 @@ class BannerEditComponent extends React.Component{
                             <button className="content__button content__button_red" onClick={this.deleteBanner}>Delete</button>
                         </div>
                     </footer>
-                    <div className="error">
-                        <span className="error__text">Banner with name "some banner" is already exist</span>
-                    </div>
+                    {this.errorView()}
                 </form>
             </section>
+
         );
     }
 }

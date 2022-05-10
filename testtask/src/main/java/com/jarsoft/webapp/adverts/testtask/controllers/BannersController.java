@@ -7,15 +7,19 @@ import com.jarsoft.webapp.adverts.testtask.repositories.BannerRepository;
 import com.jarsoft.webapp.adverts.testtask.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+
 
 
 @RestController()
@@ -40,14 +44,16 @@ public class BannersController {
 
 
     @PostMapping("/{bid}")
-    public ResponseEntity<BannerEntity> updateBanner(@PathVariable Long bid, @RequestBody BannerEntity bannerDetails){
-          BannerEntity banner = bannerRepository.findById(bid).orElseThrow();
-          banner.setName(bannerDetails.getName());
-          banner.setPrice(bannerDetails.getPrice());
-          banner.setText(bannerDetails.getText());
-          banner.setCategories(bannerDetails.getCategories());
+    public ResponseEntity<BannerEntity> updateBanner(@PathVariable Long bid,
+                                                     @Valid @RequestBody BannerEntity bannerDetails) {
 
-          BannerEntity updatedBannerEntity = bannerRepository.save(banner);
+        BannerEntity banner = bannerRepository.findById(bid).orElseThrow();
+        banner.setName(bannerDetails.getName());
+        banner.setPrice(bannerDetails.getPrice());
+        banner.setText(bannerDetails.getText());
+        banner.setCategories(bannerDetails.getCategories());
+        BannerEntity updatedBannerEntity = bannerRepository.save(banner);
+
         return ResponseEntity.ok(updatedBannerEntity);
     }
 
