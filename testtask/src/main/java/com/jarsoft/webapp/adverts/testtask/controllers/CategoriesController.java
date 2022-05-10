@@ -1,93 +1,59 @@
 package com.jarsoft.webapp.adverts.testtask.controllers;
 
+import com.jarsoft.webapp.adverts.testtask.entity.BannerEntity;
 import com.jarsoft.webapp.adverts.testtask.entity.CategoryEntity;
+import com.jarsoft.webapp.adverts.testtask.exception.ResourceNotFoundException;
 import com.jarsoft.webapp.adverts.testtask.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Streamable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
-@Controller
-@RequestMapping("categories")
+
+@RestController()
+@RequestMapping("/api/categories")
 public class CategoriesController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    /**
-     * <h1> Application page with categories</h1>
-     * @param model for insert data in html
-     * @return categoryEmptyView.html
-     */
-    @GetMapping()
-    public String categoriesView(Model model){
+    @GetMapping("/")
+    public List<CategoryEntity> categoriesView(){
         Iterable<CategoryEntity> categories = categoryRepository.findAll();
-        model.addAttribute("categories",categories);
-        return "layout/categoryEmptyView";
-    }
-    /**
-     * <h1> Application page with categories and edit list for current</h1>
-     * @param cid for define current category
-     * @param model for insert data in html
-     * @return category-edit.html
-     */
-    @GetMapping("/{cid}")
-    public String show(@PathVariable("cid") Long cid, Model model) {
-        Iterable<CategoryEntity> categories = categoryRepository.findAll();
-        model.addAttribute("categories",categories);
-        CategoryEntity currCategory = categoryRepository.findById(cid).orElseThrow();
-        model.addAttribute("currCategory",currCategory);
-        return "layout/category-edit";
-    }
-    /**
-     * <h1> Post Request to change data in current category</h1>
-     * @param cid for define current category
-     * @param action field from buttons Save/Delete
-     * @param name put in CategoryEntity.name
-     * @param idRequest put in CategoryEntity.idRequest
-     * @return categoryEmptyView.html
-     */
-    @PostMapping("/{cid}")
-    public String updateCategory(
-            @PathVariable(value = "cid") long cid,
-            @RequestParam String action,
-            @RequestParam String name,
-            @RequestParam String idRequest){
-        CategoryEntity category = categoryRepository.findById(cid).orElseThrow();
-        if(action.equals("Save")){
-            category.setName(name);
-            category.setIdRequest(idRequest);
-            categoryRepository.save(category);
-        }
-        else{
-            categoryRepository.delete(category);
-        }
-        return "redirect:/categories";
+        return Streamable.of(categories).toList();
     }
 
-    /**
-     * <h1>  Application page with categories and create list</h1>
-     * @param model for insert data in html
-     * @return category-create.html
-     */
-    @GetMapping("/create")
-    public String create(Model model) {
-        Iterable<CategoryEntity> categories = categoryRepository.findAll();
-        model.addAttribute("categories",categories);
-        return "layout/category-create";
+    @GetMapping("/{cid}")
+    public CategoryEntity show(@PathVariable("cid") Long cid) {
+        CategoryEntity currCategory = categoryRepository.findById(cid).orElseThrow();
+        return currCategory;
     }
-    /**
-     * <h1> Post Request to create data in table CategoryEntity</h1>
-     * @param name put in CategoryEntity.name
-     * @param idRequest put in CategoryEntity.idRequest
-     * @return bannerEmptyView.html
-     */
+
+    @PostMapping("/{cid}")
+    public ResponseEntity<CategoryEntity> updateCategory(@PathVariable Long cid, @RequestBody CategoryEntity categoryDetails){
+        CategoryEntity category = categoryRepository.findById(cid).orElseThrow();
+        category.setName(categoryDetails.getName());
+        category.setIdRequest(categoryDetails.getIdRequest());
+        CategoryEntity updatedCategoryEntity = categoryRepository.save(category);
+        return ResponseEntity.ok(updatedCategoryEntity);
+    }
+
+
+    @GetMapping("/create")
+    public String create() {return "";}
+
     @PostMapping("/create")
-    public String createCategory(
-            @RequestParam String name,
-            @RequestParam String idRequest){
-        CategoryEntity category = new CategoryEntity(name,idRequest);
-        categoryRepository.save(category);
-        return "redirect:/categories";
+    public CategoryEntity createCategory(@RequestBody CategoryEntity category) {
+        return categoryRepository.save(category);
+    }
+    @DeleteMapping("/{cid}")
+    public ResponseEntity<Boolean> deleteCategory(@PathVariable Long cid){
+        CategoryEntity category = categoryRepository.findById(cid)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not exist with id :" + cid));
+        categoryRepository.delete(category);
+        return ResponseEntity.ok(true);
     }
 }

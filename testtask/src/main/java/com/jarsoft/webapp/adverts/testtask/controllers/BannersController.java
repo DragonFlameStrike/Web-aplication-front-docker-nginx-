@@ -33,7 +33,7 @@ public class BannersController {
     }
 
     @GetMapping("/{bid}")
-    public BannerEntity show(@PathVariable("bid") Long bid, Model model) {
+    public BannerEntity show(@PathVariable("bid") Long bid) {
         BannerEntity currBanner = bannerRepository.findById(bid).orElseThrow();
         return currBanner;
     }
@@ -55,9 +55,10 @@ public class BannersController {
     public String create() {
         return "";
     }
+
+
     @PostMapping("/create")
     public BannerEntity createBanner(@RequestBody BannerEntity banner) {
-        System.out.println(banner);
         return bannerRepository.save(banner);
     }
     @DeleteMapping("/{bid}")

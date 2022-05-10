@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css">
-    <title>Banners</title>
+    <title>Categories</title>
 </head>
 <body>
 <div class="container">
     <header class="header">
         <nav class="header__nav">
             <a href="/" class="header__link ">Banners</a>
-            <a href="/categories" class="header__link header__link_active">Categories</a>
+            <a href="/categories/" class="header__link header__link_active">Categories</a>
         </nav>
     </header>
 
@@ -26,9 +26,7 @@
                     <span class="sidebar__search-icon"></span>
                 </div>
                 <div class="sidebar__menu">
-                    <div th:each="element : ${categories}" class="sidebar__menu-item">
-                        <a th:href="'/categories/'+${element.idCategory}" th:text="${element.name}"/>
-                    </div>
+                    <div id="Bar"></div>
                 </div>
             </section>
 
@@ -36,10 +34,8 @@
                 <button class="sidebar__submit-button" onclick="window.location.href='/categories/create'">Create new Category</button>
             </footer>
         </aside>
-
-        <section class="content content_center">
-            Choose an action.
-        </section>
+        <section id="mainField" class="main"></section>
+        <script src="/built/bundle.js"></script>
     </main>
 </div>
 </body>
