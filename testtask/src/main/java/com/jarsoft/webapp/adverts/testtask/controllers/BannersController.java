@@ -1,17 +1,17 @@
 package com.jarsoft.webapp.adverts.testtask.controllers;
 
 import com.jarsoft.webapp.adverts.testtask.entity.BannerEntity;
+import com.jarsoft.webapp.adverts.testtask.exception.NotUniqueNameException;
 import com.jarsoft.webapp.adverts.testtask.exception.ResourceNotFoundException;
 import com.jarsoft.webapp.adverts.testtask.repositories.BannerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Streamable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 
 
 @RestController()
@@ -56,7 +56,16 @@ public class BannersController {
 
     @PostMapping("/{bid}")
     public ResponseEntity<BannerEntity> updateBanner(@PathVariable Long bid,
-                                                     @Valid @RequestBody BannerEntity bannerDetails) {
+                                                     @Valid @RequestBody BannerEntity bannerDetails) throws NotUniqueNameException {
+
+        Iterable<BannerEntity> banners = bannerRepository.findAll();
+        for (BannerEntity banner: banners) {
+            if(!Objects.equals(banner.getIdBanner(), bid) && !banner.getDeleted()) {
+                if (banner.getName().equals(bannerDetails.getName())) {
+                    throw new NotUniqueNameException();
+                }
+            }
+        }
 
         BannerEntity banner = bannerRepository.findById(bid).orElseThrow();
         banner.setName(bannerDetails.getName());
