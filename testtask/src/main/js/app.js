@@ -30,7 +30,6 @@ class  MainFieldApp extends React.Component {
                         <Route path="/categories/create" component={CategoryCreateComponent}/>
                         <Route path="/categories/:cid" component={CategoryEditComponent}/>
                         <Route path="/categories/" component={EmptyFieldComponent}/>
-                        <Route path="/search/{name}" component={EmptyFieldComponent}/>
                         <Route path="/create" component={BannerCreateComponent}/>
                         <Route path="/:bid" component={BannerEditComponent}/>
                         <Route path="/" exact component={EmptyFieldComponent}/>
@@ -59,7 +58,7 @@ class BarApp extends React.Component { // <1>
     componentDidMount() { // <2>
         console.log(this.state.search)
         if(window.location.href.includes("categories")) {
-            CategoryService.getCategories().then(r => {
+            CategoryService.getCategories(this.state.search).then(r => {
                 this.setState({elements: r.data});
             });
         }
@@ -82,8 +81,11 @@ class BarApp extends React.Component { // <1>
                 <div className="sidebar__search">
                     <form>
                         <input className="sidebar__search-input"
-                            type="text"
-                            placeholder="Enter category name..."
+                               type="text"
+                               name="search"
+                               value={search}
+                               onChange={this.searchChange}
+                               placeholder="Enter category name..."
                         />
                     </form>
                 </div>

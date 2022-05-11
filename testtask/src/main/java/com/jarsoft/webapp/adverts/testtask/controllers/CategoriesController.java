@@ -1,5 +1,6 @@
 package com.jarsoft.webapp.adverts.testtask.controllers;
 
+import com.jarsoft.webapp.adverts.testtask.entity.BannerEntity;
 import com.jarsoft.webapp.adverts.testtask.entity.CategoryEntity;
 import com.jarsoft.webapp.adverts.testtask.exception.ResourceNotFoundException;
 import com.jarsoft.webapp.adverts.testtask.repositories.CategoryRepository;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,10 +20,23 @@ public class CategoriesController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @GetMapping("/")
-    public List<CategoryEntity> categoriesView(){
+    @GetMapping("/search/")
+    public List<CategoryEntity> viewAllCategories(){
         Iterable<CategoryEntity> categories = categoryRepository.findAll();
         return Streamable.of(categories).toList();
+    }
+    @GetMapping("/search/{searchValue}")
+    public List<CategoryEntity> viewCertainCategories(@PathVariable String searchValue){
+        Iterable<CategoryEntity> categories = categoryRepository.findAll();
+        List<CategoryEntity> filteredCategories = new ArrayList<>();
+        for (CategoryEntity category: categories) {
+            String name = category.getName().toLowerCase();
+            searchValue = searchValue.toLowerCase();
+            if(name.contains(searchValue)){
+                filteredCategories.add(category);
+            }
+        }
+        return filteredCategories;
     }
 
     @GetMapping("/{cid}")
