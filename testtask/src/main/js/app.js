@@ -47,21 +47,35 @@ ReactDOM.render(
 class BarApp extends React.Component { // <1>
     constructor(props) {
         super(props);
-        this.state = {elements: []};
+
+        this.state = {
+            elements: [],
+            search: new URL(window.location.href).searchParams.get("search")
+        };
+        if(this.state.search === null){
+            this.state.search = "";
+        }
     }
     componentDidMount() { // <2>
+        console.log(this.state.search)
         if(window.location.href.includes("categories")) {
             CategoryService.getCategories().then(r => {
                 this.setState({elements: r.data});
             });
         }
         else{
-            BannerService.getBanners().then(r => {
+            BannerService.getBanners(this.state.search).then(r => {
                 this.setState({elements: r.data});
             });
         }
     }
+    searchChange = (event) => {
+        this.setState({
+            [event.target.name]: event.target.value,
+        });
+    };
     render() { // <3>
+        const {search} = this.state;
         if(window.location.href.includes("categories")) {
             return (
                 <section>
@@ -87,7 +101,10 @@ class BarApp extends React.Component { // <1>
                         <form>
                             <input className="sidebar__search-input"
                                    type="text"
-                                   placeholder="Enter category name..."
+                                   name="search"
+                                   value={search}
+                                   onChange={this.searchChange}
+                                   placeholder="Enter banner name..."
                             />
                             <span className="sidebar__search-icon"/>
                         </form>
@@ -104,52 +121,7 @@ ReactDOM.render(
     <BarApp />,
     document.getElementById('Bar')
 )
-// class SearchApp extends React.Component { // <1>
-//     constructor(props) {
-//         super(props);
-//         this.state = {elements: []};
-//     }
-//
-//     componentDidMount() { // <2>
-//         if(window.location.href.includes("categories")) {
-//             // CategoryService.getCategories().then(r => {
-//             //     this.setState({elements: r.data});
-//             // });
-//         }
-//         else{
-//             // BannerService.getBanners().then(r => {
-//             //     this.setState({elements: r.data});
-//             // });
-//         }
-//     }
-//     render() { // <3>
-//         if(window.location.href.includes("categories")) {
-//             return (
-//                 <form>
-//                     <input className="sidebar__search-input"
-//                            type="text"
-//                            placeholder="Enter category name..."
-//                     />
-//                 </form>
-//             )
-//         }
-//         else {
-//             return (
-//                 <form method="get">
-//                     <input className="sidebar__search-input"
-//                            type="text"
-//                            placeholder="Enter banner name..."
-//                            id="name"
-//                     />
-//                 </form>
-//             )
-//         }
-//     }
-// }
-// ReactDOM.render(
-//     <SearchApp />,
-//     document.getElementById('Search')
-// )
+
 
 
 

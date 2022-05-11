@@ -9,8 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Locale;
 
 
 @RestController()
@@ -19,8 +20,23 @@ public class BannersController {
     @Autowired
     private BannerRepository bannerRepository;
 
-    @GetMapping("/")
-    public List<BannerEntity> mainView(HttpServletRequest request) {
+    @GetMapping("/search/{searchValue}")
+    public List<BannerEntity> viewCertainBanners(HttpServletRequest request, @PathVariable String searchValue) {
+        System.out.println(request.getRemoteAddr()); // IP ADDRESS
+        System.out.println(request.getHeader("User-Agent")); // USER AGENT
+        Iterable<BannerEntity> banners = bannerRepository.findAll();
+        List<BannerEntity> filteredBanners = new ArrayList<>();
+        for (BannerEntity banner: banners) {
+            String name = banner.getName().toLowerCase();
+            searchValue = searchValue.toLowerCase();
+            if(name.contains(searchValue)){
+                filteredBanners.add(banner);
+            }
+        }
+        return filteredBanners;
+    }
+    @GetMapping("/search/")
+    public List<BannerEntity> viewAllBanners(HttpServletRequest request) {
         System.out.println(request.getRemoteAddr()); // IP ADDRESS
         System.out.println(request.getHeader("User-Agent")); // USER AGENT
         Iterable<BannerEntity> banners = bannerRepository.findAll();
