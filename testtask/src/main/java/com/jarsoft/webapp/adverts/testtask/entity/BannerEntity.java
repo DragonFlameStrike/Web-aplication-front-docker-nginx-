@@ -44,6 +44,14 @@ public class BannerEntity {
         this.categories.addAll(categories);
     }
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public Long getIdBanner() {
         return IdBanner;
     }

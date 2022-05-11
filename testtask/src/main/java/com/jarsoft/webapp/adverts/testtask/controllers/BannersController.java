@@ -21,16 +21,16 @@ public class BannersController {
     private BannerRepository bannerRepository;
 
     @GetMapping("/search/{searchValue}")
-    public List<BannerEntity> viewCertainBanners(HttpServletRequest request, @PathVariable String searchValue) {
-        System.out.println(request.getRemoteAddr()); // IP ADDRESS
-        System.out.println(request.getHeader("User-Agent")); // USER AGENT
+    public List<BannerEntity> viewCertainBanners(@PathVariable String searchValue) {
         Iterable<BannerEntity> banners = bannerRepository.findAll();
         List<BannerEntity> filteredBanners = new ArrayList<>();
         for (BannerEntity banner: banners) {
-            String name = banner.getName().toLowerCase();
-            searchValue = searchValue.toLowerCase();
-            if(name.contains(searchValue)){
-                filteredBanners.add(banner);
+            if(banner.getDeleted() == null || !banner.getDeleted()) {
+                String name = banner.getName().toLowerCase();
+                searchValue = searchValue.toLowerCase();
+                if (name.contains(searchValue)) {
+                    filteredBanners.add(banner);
+                }
             }
         }
         return filteredBanners;
@@ -40,7 +40,11 @@ public class BannersController {
         System.out.println(request.getRemoteAddr()); // IP ADDRESS
         System.out.println(request.getHeader("User-Agent")); // USER AGENT
         Iterable<BannerEntity> banners = bannerRepository.findAll();
-        return Streamable.of(banners).toList();
+        List<BannerEntity> filteredBanners = new ArrayList<>();
+        for (BannerEntity banner: banners) {
+            if(banner.getDeleted() == null || !banner.getDeleted()) filteredBanners.add(banner);
+        }
+        return filteredBanners;
     }
 
     @GetMapping("/{bid}")
@@ -59,6 +63,7 @@ public class BannersController {
         banner.setPrice(bannerDetails.getPrice());
         banner.setText(bannerDetails.getText());
         banner.setCategories(bannerDetails.getCategories());
+        banner.setDeleted(false);
         BannerEntity updatedBannerEntity = bannerRepository.save(banner);
 
         return ResponseEntity.ok(updatedBannerEntity);
@@ -74,11 +79,13 @@ public class BannersController {
     public BannerEntity createBanner(@Valid @RequestBody BannerEntity banner) {
         return bannerRepository.save(banner);
     }
+
     @DeleteMapping("/{bid}")
     public ResponseEntity<Boolean> deleteBanner(@PathVariable Long bid){
         BannerEntity banner = bannerRepository.findById(bid)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not exist with id :" + bid));
-        bannerRepository.delete(banner);
+        banner.setDeleted(true);
+        bannerRepository.save(banner);
         return ResponseEntity.ok(true);
     }
 
