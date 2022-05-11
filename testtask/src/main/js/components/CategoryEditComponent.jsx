@@ -14,7 +14,9 @@ class CategoryEditComponent extends React.Component{
             id: this.props.match.params.cid,
             name: '',
             oldname: '',
+            error: false,
             idRequest: '',
+            sameNameError: false
 
         }
         this.changeName = this.changeName.bind(this);
@@ -42,12 +44,19 @@ class CategoryEditComponent extends React.Component{
 
     saveCategory=(e) => {
         e.preventDefault();
+        this.setState({ error: false});
         let category = {name: this.state.name.toString(), idRequest: this.state.idRequest.toString()};
         CategoryService.updateCategory(category, this.state.id).then( res => {
-            this.props.history.push('/categories/');
-            window.location.reload();
-
-        });
+            console.log(this.state.error);
+            if(this.state.error === false) {
+                this.props.history.push('/categories/');
+                window.location.reload();
+            }
+        })
+            .catch((error) => {
+                this.setState({error: true});
+                console.log(this.state.error);
+            })
 
     }
     deleteCategory=(e) => {
@@ -56,6 +65,22 @@ class CategoryEditComponent extends React.Component{
             this.props.history.push('/');
             window.location.reload();
         });
+    }
+    errorView = (e) => {
+        if(this.state.error === true){
+            return (
+                <div className="error">
+                    <span className="error__text">Wrong input</span>
+                </div>
+            )
+        }
+        if(this.state.sameNameError){
+            return (
+                <div className="error">
+                    <span className="error__text">Banner with name "some banner" is already exist</span>
+                </div>
+            )
+        }
     }
 
     render() {
@@ -91,6 +116,7 @@ class CategoryEditComponent extends React.Component{
                             <button className="content__button content__button_red" onClick={this.deleteCategory}>Delete</button>
                         </div>
                     </footer>
+                    {this.errorView()}
                 </form>
             </section>
         );

@@ -37,6 +37,7 @@ public class BannerEntity {
 
     @JsonIgnoreProperties("banners")
     private List<CategoryEntity> categories = new ArrayList<>();
+    private Boolean deleted = false;
 
     public BannerEntity() {
     }

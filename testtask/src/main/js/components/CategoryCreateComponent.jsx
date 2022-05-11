@@ -12,6 +12,8 @@ class CategoryCreateComponent extends React.Component{
             name: '',
             oldname: '',
             idRequest: '',
+            error: false,
+            sameNameError: false
 
         }
         this.changeName = this.changeName.bind(this);
@@ -28,11 +30,35 @@ class CategoryCreateComponent extends React.Component{
     }
     createCategory =(e) => {
         e.preventDefault();
+        this.setState({ error: false});
         let category = {name: this.state.name.toString(), idRequest: this.state.idRequest.toString()};
         CategoryService.createCategory(category).then(res =>{
-            this.props.history.push('/categories/');
-            window.location.reload();
-        });
+            console.log(this.state.error);
+            if(this.state.error === false) {
+                this.props.history.push('/categories/');
+                window.location.reload();
+            }
+        })
+            .catch((error) => {
+                this.setState({error: true});
+                console.log(this.state.error);
+            })
+    }
+    errorView = (e) => {
+        if(this.state.error === true){
+            return (
+                <div className="error">
+                    <span className="error__text">Wrong input</span>
+                </div>
+            )
+        }
+        if(this.state.sameNameError){
+            return (
+                <div className="error">
+                    <span className="error__text">Banner with name "some banner" is already exist</span>
+                </div>
+            )
+        }
     }
 
     render() {
@@ -72,6 +98,7 @@ class CategoryCreateComponent extends React.Component{
                         <span className="error__text">Category with name "some category" is already exist</span>
                     </div>
                 </form>
+                {this.errorView()}
             </section>
         );
     }

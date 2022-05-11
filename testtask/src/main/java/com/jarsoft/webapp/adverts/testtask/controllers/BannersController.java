@@ -64,7 +64,7 @@ public class BannersController {
 
 
     @PostMapping("/create")
-    public BannerEntity createBanner(@RequestBody BannerEntity banner) {
+    public BannerEntity createBanner(@Valid @RequestBody BannerEntity banner) {
         return bannerRepository.save(banner);
     }
     @DeleteMapping("/{bid}")

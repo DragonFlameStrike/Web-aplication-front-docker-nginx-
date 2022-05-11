@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -33,7 +34,7 @@ public class CategoriesController {
     }
 
     @PostMapping("/{cid}")
-    public ResponseEntity<CategoryEntity> updateCategory(@PathVariable Long cid, @RequestBody CategoryEntity categoryDetails){
+    public ResponseEntity<CategoryEntity> updateCategory(@PathVariable Long cid, @Valid @RequestBody CategoryEntity categoryDetails){
         CategoryEntity category = categoryRepository.findById(cid).orElseThrow();
         category.setName(categoryDetails.getName());
         category.setIdRequest(categoryDetails.getIdRequest());
@@ -46,7 +47,7 @@ public class CategoriesController {
     public String create() {return "";}
 
     @PostMapping("/create")
-    public CategoryEntity createCategory(@RequestBody CategoryEntity category) {
+    public CategoryEntity createCategory(@Valid @RequestBody CategoryEntity category) {
         return categoryRepository.save(category);
     }
     @DeleteMapping("/{cid}")
