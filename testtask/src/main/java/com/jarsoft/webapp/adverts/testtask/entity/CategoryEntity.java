@@ -1,14 +1,10 @@
 package com.jarsoft.webapp.adverts.testtask.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 
 // Create Table CategoryEntity in MySQL Database
 @Entity

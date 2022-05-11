@@ -1,7 +1,6 @@
-import ReactDOM from "react-dom";
-import app from "../app";
+
 import BannerService from "../services/BannerService";
-import { useParams } from "react-router-dom";
+
 
 const React = require("react");
 

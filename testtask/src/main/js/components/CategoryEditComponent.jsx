@@ -1,5 +1,4 @@
-import ReactDOM from "react-dom";
-import app from "../app";
+
 import CategoryService from "../services/CategoryService";
 
 
