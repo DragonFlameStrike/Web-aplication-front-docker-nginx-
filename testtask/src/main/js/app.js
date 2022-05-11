@@ -30,6 +30,7 @@ class  MainFieldApp extends React.Component {
                         <Route path="/categories/create" component={CategoryCreateComponent}/>
                         <Route path="/categories/:cid" component={CategoryEditComponent}/>
                         <Route path="/categories/" component={EmptyFieldComponent}/>
+                        <Route path="/search/{name}" component={EmptyFieldComponent}/>
                         <Route path="/create" component={BannerCreateComponent}/>
                         <Route path="/:bid" component={BannerEditComponent}/>
                         <Route path="/" exact component={EmptyFieldComponent}/>
@@ -63,12 +64,38 @@ class BarApp extends React.Component { // <1>
     render() { // <3>
         if(window.location.href.includes("categories")) {
             return (
-                <CategoryListComponent categories={this.state.elements}/>
+                <section>
+                <div className="sidebar__search">
+                    <form>
+                        <input className="sidebar__search-input"
+                            type="text"
+                            placeholder="Enter category name..."
+                        />
+                    </form>
+                </div>
+                <div className="sidebar__menu">
+                    <CategoryListComponent categories={this.state.elements}/>
+                </div>
+                </section>
             )
         }
         else{
             return (
-                <BannerListComponent banners={this.state.elements}/>
+
+                <section>
+                    <div className="sidebar__search">
+                        <form>
+                            <input className="sidebar__search-input"
+                                   type="text"
+                                   placeholder="Enter category name..."
+                            />
+                            <span className="sidebar__search-icon"/>
+                        </form>
+                    </div>
+                    <div className="sidebar__menu">
+                        <BannerListComponent banners={this.state.elements}/>
+                    </div>
+                </section>
             )
         }
     }
@@ -77,48 +104,52 @@ ReactDOM.render(
     <BarApp />,
     document.getElementById('Bar')
 )
-// class BannersBarApp extends React.Component { // <1>
+// class SearchApp extends React.Component { // <1>
 //     constructor(props) {
 //         super(props);
-//         this.state = {banners: []};
+//         this.state = {elements: []};
 //     }
+//
 //     componentDidMount() { // <2>
-//         console.log(window.location.href);
-//
-//             BannerService.getBanners().then(r => {
-//                 this.setState({banners: r.data});
-//             });
-//
+//         if(window.location.href.includes("categories")) {
+//             // CategoryService.getCategories().then(r => {
+//             //     this.setState({elements: r.data});
+//             // });
+//         }
+//         else{
+//             // BannerService.getBanners().then(r => {
+//             //     this.setState({elements: r.data});
+//             // });
+//         }
 //     }
 //     render() { // <3>
-//         return (
-//             <BannerListComponent banners={this.state.banners}/>
-//         )
+//         if(window.location.href.includes("categories")) {
+//             return (
+//                 <form>
+//                     <input className="sidebar__search-input"
+//                            type="text"
+//                            placeholder="Enter category name..."
+//                     />
+//                 </form>
+//             )
+//         }
+//         else {
+//             return (
+//                 <form method="get">
+//                     <input className="sidebar__search-input"
+//                            type="text"
+//                            placeholder="Enter banner name..."
+//                            id="name"
+//                     />
+//                 </form>
+//             )
+//         }
 //     }
 // }
 // ReactDOM.render(
-//     <BannersBarApp />,
-//     document.getElementById('bannersBar')
+//     <SearchApp />,
+//     document.getElementById('Search')
 // )
-// class CategoryBarApp extends React.Component { // <1>
-//     constructor(props) {
-//         super(props);
-//         this.state = {categories: []};
-//     }
-//     componentDidMount() { // <2>
-//         CategoryService.getCategories().then(r => {
-//             this.setState({categories: r.data});
-//         });
-//     }
-//     render() { // <3>
-//         return (
-//             <CategoryListComponent categories={this.state.categories}/>
-//         )
-//     }
-// }
-// ReactDOM.render(
-//     <CategoryBarApp />,
-//     document.getElementById('categoriesBar')
-// )
+
 
 
