@@ -61,7 +61,7 @@ class CategoryEditComponent extends React.Component{
     deleteCategory=(e) => {
         e.preventDefault();
         CategoryService.deleteCategory(this.state.id).then( res => {
-            this.props.history.push('/');
+            this.props.history.push('/categories/');
             window.location.reload();
         });
     }

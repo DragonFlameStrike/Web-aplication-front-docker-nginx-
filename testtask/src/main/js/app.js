@@ -87,6 +87,7 @@ class BarApp extends React.Component { // <1>
                                onChange={this.searchChange}
                                placeholder="Enter category name..."
                         />
+                        <span className="sidebar__search-icon"/>
                     </form>
                 </div>
                 <div className="sidebar__menu">
