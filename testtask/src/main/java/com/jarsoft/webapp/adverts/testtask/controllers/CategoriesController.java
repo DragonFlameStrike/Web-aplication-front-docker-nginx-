@@ -23,17 +23,25 @@ public class CategoriesController {
     @GetMapping("/search/")
     public List<CategoryEntity> viewAllCategories(){
         Iterable<CategoryEntity> categories = categoryRepository.findAll();
-        return Streamable.of(categories).toList();
+        List<CategoryEntity> filteredCategories = new ArrayList<>();
+        for (CategoryEntity category: categories) {
+            if (category.getDeleted() == null || !category.getDeleted()) {
+                filteredCategories.add(category);
+            }
+        }
+        return filteredCategories;
     }
     @GetMapping("/search/{searchValue}")
     public List<CategoryEntity> viewCertainCategories(@PathVariable String searchValue){
         Iterable<CategoryEntity> categories = categoryRepository.findAll();
         List<CategoryEntity> filteredCategories = new ArrayList<>();
         for (CategoryEntity category: categories) {
-            String name = category.getName().toLowerCase();
-            searchValue = searchValue.toLowerCase();
-            if(name.contains(searchValue)){
-                filteredCategories.add(category);
+            if(category.getDeleted() == null || !category.getDeleted()) {
+                String name = category.getName().toLowerCase();
+                searchValue = searchValue.toLowerCase();
+                if (name.contains(searchValue)) {
+                    filteredCategories.add(category);
+                }
             }
         }
         return filteredCategories;
@@ -50,6 +58,7 @@ public class CategoriesController {
         CategoryEntity category = categoryRepository.findById(cid).orElseThrow();
         category.setName(categoryDetails.getName());
         category.setIdRequest(categoryDetails.getIdRequest());
+        category.setDeleted(false);
         CategoryEntity updatedCategoryEntity = categoryRepository.save(category);
         return ResponseEntity.ok(updatedCategoryEntity);
     }
@@ -66,7 +75,8 @@ public class CategoriesController {
     public ResponseEntity<Boolean> deleteCategory(@PathVariable Long cid){
         CategoryEntity category = categoryRepository.findById(cid)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not exist with id :" + cid));
-        categoryRepository.delete(category);
+        category.setDeleted(true);
+        categoryRepository.save(category);
         return ResponseEntity.ok(true);
     }
 }

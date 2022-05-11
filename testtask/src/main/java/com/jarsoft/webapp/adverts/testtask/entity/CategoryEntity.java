@@ -17,10 +17,9 @@ public class CategoryEntity {
     private String name;
     @NotEmpty
     private String IdRequest;
-
     @ManyToMany(mappedBy = "categories")
-
     List<BannerEntity> banners = new ArrayList<>();
+    private Boolean deleted = false;
 
     public CategoryEntity() {
     }
@@ -29,6 +28,14 @@ public class CategoryEntity {
     public CategoryEntity(String name, String idRequest) {
         this.name=name;
         this.IdRequest=idRequest;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     public List<BannerEntity> getBanners() {
