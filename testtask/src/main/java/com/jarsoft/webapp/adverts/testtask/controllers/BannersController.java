@@ -60,7 +60,7 @@ public class BannersController {
 
         Iterable<BannerEntity> banners = bannerRepository.findAll();
         for (BannerEntity banner: banners) {
-            if(!Objects.equals(banner.getIdBanner(), bid) && !banner.getDeleted()) {
+            if(!Objects.equals(banner.getIdBanner(), bid) && (banner.getDeleted() == null || !banner.getDeleted())) {
                 if (banner.getName().equals(bannerDetails.getName())) {
                     throw new NotUniqueNameException();
                 }
@@ -85,8 +85,16 @@ public class BannersController {
 
 
     @PostMapping("/create")
-    public BannerEntity createBanner(@Valid @RequestBody BannerEntity banner) {
-        return bannerRepository.save(banner);
+    public BannerEntity createBanner(@Valid @RequestBody BannerEntity newBanner) throws NotUniqueNameException {
+        Iterable<BannerEntity> banners = bannerRepository.findAll();
+        for (BannerEntity banner: banners) {
+            if(banner.getDeleted() == null || !banner.getDeleted()) {
+                if (banner.getName().equals(newBanner.getName())) {
+                    throw new NotUniqueNameException();
+                }
+            }
+        }
+        return bannerRepository.save(newBanner);
     }
 
     @DeleteMapping("/{bid}")
