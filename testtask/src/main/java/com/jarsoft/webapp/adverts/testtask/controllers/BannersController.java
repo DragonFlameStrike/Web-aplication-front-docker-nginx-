@@ -12,6 +12,8 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @RestController()
@@ -39,12 +41,9 @@ public class BannersController {
     public List<BannerEntity> viewAllBanners(HttpServletRequest request) {
         System.out.println(request.getRemoteAddr()); // IP ADDRESS
         System.out.println(request.getHeader("User-Agent")); // USER AGENT
-        Iterable<BannerEntity> banners = bannerRepository.findAll();
-        List<BannerEntity> filteredBanners = new ArrayList<>();
-        for (BannerEntity banner: banners) {
-            if(banner.getDeleted() == null || !banner.getDeleted()) filteredBanners.add(banner);
-        }
-        return filteredBanners;
+        Iterable<BannerEntity> banners = bannerRepository.findAllNotDeleted();
+        return StreamSupport.stream(banners.spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{bid}")

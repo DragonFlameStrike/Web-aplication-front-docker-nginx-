@@ -44,6 +44,14 @@ public class BannerEntity {
         this.categories.addAll(categories);
     }
 
+    public BannerEntity(String name, Long price, String text, Long IdBanner) {
+        super();
+        this.name = name;
+        this.price = price;
+        this.text = text;
+        this.IdBanner = IdBanner;
+    }
+
     public Boolean getDeleted() {
         return deleted;
     }
