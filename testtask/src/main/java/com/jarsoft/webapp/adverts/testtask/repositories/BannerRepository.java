@@ -18,9 +18,13 @@ public interface BannerRepository extends CrudRepository<BannerEntity,Long> {
     Iterable<BannerEntity> findAllNotDeleted();
 
 
-    String FIND_QUERY_FOR_VIEW_NOT_DELETED_BY_NAME =
-            "SELECT " + SELECT_BANNERS + "FROM BannerEntity banner " + "WHERE banner.deleted = 0 AND LOWER(banner.name) LIKE Concat('%',:searchBannerName,'%')";
-    @Query(value = FIND_QUERY_FOR_VIEW_NOT_DELETED_BY_NAME)
-    Iterable<BannerEntity> findAllNotDeletedByName(@Param("searchBannerName") String searchBannerNameLowerCase);
+    String FIND_QUERY_FOR_VIEW_NOT_DELETED_BY_SEARCH =
+            "SELECT " + SELECT_BANNERS + "FROM BannerEntity banner " + "WHERE banner.deleted = 0 AND LOWER(banner.name) LIKE Concat('%',:searchBannerPattern,'%')";
+    @Query(value = FIND_QUERY_FOR_VIEW_NOT_DELETED_BY_SEARCH)
+    Iterable<BannerEntity> findAllNotDeletedBySearch(@Param("searchBannerPattern") String searchBannerNameLowerCase);
 
+    String FIND_QUERY_FOR_VIEW_NOT_DELETED_BY_NAME =
+            "SELECT " + SELECT_BANNERS + "FROM BannerEntity banner " + "WHERE banner.deleted = 0 AND banner.name LIKE :searchBannerName";
+    @Query(value = FIND_QUERY_FOR_VIEW_NOT_DELETED_BY_NAME)
+    Iterable<BannerEntity> findAllNotDeletedByName(@Param("searchBannerName") String name);
 }

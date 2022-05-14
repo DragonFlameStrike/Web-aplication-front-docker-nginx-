@@ -1,9 +1,11 @@
 package com.jarsoft.webapp.adverts.testtask.controllers;
 
 import com.jarsoft.webapp.adverts.testtask.entity.BannerEntity;
+import com.jarsoft.webapp.adverts.testtask.exception.BadNameException;
 import com.jarsoft.webapp.adverts.testtask.exception.NotUniqueNameException;
 import com.jarsoft.webapp.adverts.testtask.exception.ResourceNotFoundException;
 import com.jarsoft.webapp.adverts.testtask.repositories.BannerRepository;
+import com.jarsoft.webapp.adverts.testtask.security.SqlInjectionSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,19 +26,9 @@ public class BannersController {
     private BannerRepository bannerRepository;
 
     @GetMapping("/search/{searchValue}")
-    public List<BannerEntity> viewCertainBanners(@PathVariable String searchValue) {
-
-        Iterable<BannerEntity> banners = bannerRepository.findAllNotDeletedByName(searchValue.toLowerCase());
-//        List<BannerEntity> filteredBanners = new ArrayList<>();
-//        for (BannerEntity banner: banners) {
-//            if(banner.getDeleted() == null || !banner.getDeleted()) {
-//                String name = banner.getName().toLowerCase();
-//                searchValue = searchValue.toLowerCase();
-//                if (name.contains(searchValue)) {
-//                    filteredBanners.add(banner);
-//                }
-//            }
-//        }
+    public List<BannerEntity> viewCertainBanners(@PathVariable String searchValue) throws BadNameException {
+        if(SqlInjectionSecurity.check(searchValue)) throw new BadNameException();
+        Iterable<BannerEntity> banners = bannerRepository.findAllNotDeletedBySearch(searchValue.toLowerCase());
         return StreamSupport.stream(banners.spliterator(), false)
                 .collect(Collectors.toList());
     }
@@ -58,12 +50,13 @@ public class BannersController {
 
     @PostMapping("/{bid}")
     public ResponseEntity<BannerEntity> updateBanner(@PathVariable Long bid,
-                                                     @Valid @RequestBody BannerEntity bannerDetails) throws NotUniqueNameException {
+                                                     @Valid @RequestBody BannerEntity bannerDetails) throws NotUniqueNameException, BadNameException {
 
-        Iterable<BannerEntity> banners = bannerRepository.findAll();
+        if(SqlInjectionSecurity.check(bannerDetails.getName())) throw new BadNameException();
+        Iterable<BannerEntity> banners = bannerRepository.findAllNotDeletedByName(bannerDetails.getName());
         for (BannerEntity banner: banners) {
-            if(!Objects.equals(banner.getIdBanner(), bid) && (banner.getDeleted() == null || !banner.getDeleted())) {
-                if (banner.getName().equals(bannerDetails.getName())) {
+            if(!Objects.equals(banner.getIdBanner(), bid)) {
+                if (banner.getName().equals(bannerDetails.getName())) {  //You should re-control result, because query used LOWERCASE context
                     throw new NotUniqueNameException();
                 }
             }
