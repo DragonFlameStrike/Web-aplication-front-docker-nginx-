@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -24,18 +25,20 @@ public class BannersController {
 
     @GetMapping("/search/{searchValue}")
     public List<BannerEntity> viewCertainBanners(@PathVariable String searchValue) {
-        Iterable<BannerEntity> banners = bannerRepository.findAll();
-        List<BannerEntity> filteredBanners = new ArrayList<>();
-        for (BannerEntity banner: banners) {
-            if(banner.getDeleted() == null || !banner.getDeleted()) {
-                String name = banner.getName().toLowerCase();
-                searchValue = searchValue.toLowerCase();
-                if (name.contains(searchValue)) {
-                    filteredBanners.add(banner);
-                }
-            }
-        }
-        return filteredBanners;
+
+        Iterable<BannerEntity> banners = bannerRepository.findAllNotDeletedByName(searchValue.toLowerCase());
+//        List<BannerEntity> filteredBanners = new ArrayList<>();
+//        for (BannerEntity banner: banners) {
+//            if(banner.getDeleted() == null || !banner.getDeleted()) {
+//                String name = banner.getName().toLowerCase();
+//                searchValue = searchValue.toLowerCase();
+//                if (name.contains(searchValue)) {
+//                    filteredBanners.add(banner);
+//                }
+//            }
+//        }
+        return StreamSupport.stream(banners.spliterator(), false)
+                .collect(Collectors.toList());
     }
     @GetMapping("/search/")
     public List<BannerEntity> viewAllBanners(HttpServletRequest request) {
