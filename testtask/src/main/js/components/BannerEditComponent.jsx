@@ -1,23 +1,37 @@
 
 import BannerService from "../services/BannerService";
+import CategoryService from "../services/CategoryService";
+import {InputLabel, MenuItem, OutlinedInput, Typography} from "@material-ui/core";
+import { Select } from "@material-ui/core";
 
 
 const React = require("react");
 
-class BannerEditComponent extends React.Component{
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
 
+class BannerEditComponent extends React.Component{
     constructor(props) {
         super(props)
-
         this.state = {
             id: this.props.match.params.bid,
             name: '',
             oldname: '',
             price: '',
             text: '',
-            categories: [],
+            currCategories: [],
             error: false,
-            sameNameError: false
+            sameNameError: false,
+            allCategories:[]
+
         }
         this.changeName = this.changeName.bind(this);
         this.changePrice = this.changePrice.bind(this);
@@ -32,9 +46,13 @@ class BannerEditComponent extends React.Component{
                 oldname: banner.name,
                 price: banner.price,
                 text: banner.text,
-                categories: banner.categories
+                currCategories: banner.categories
+
             });
         });
+        CategoryService.getCategories("").then(listCategories => {
+            this.state.allCategories = listCategories.data;
+        })
     }
 
     changeName = (event) => {
@@ -45,9 +63,6 @@ class BannerEditComponent extends React.Component{
         this.setState({price: event.target.value});
     }
 
-    changeCategories= (event) => {
-        this.setState({categories: event.target.value});
-    }
     changeText= (event) => {
         this.setState({text: event.target.value});
     }
@@ -55,10 +70,9 @@ class BannerEditComponent extends React.Component{
         e.preventDefault();
         this.setState({ error: false});
         let banner = {name: this.state.name.toString(), price: parseInt(this.state.price),
-            categories: this.state.categories, text:this.state.text.toString()};
+            categories: this.state.currCategories, text:this.state.text.toString()};
         BannerService.updateBanner(banner, this.state.id)
             .then((response) => {
-                console.log(this.state.error);
                 if(this.state.error === false) {
                     this.props.history.push('/');
                     window.location.reload();
@@ -67,7 +81,6 @@ class BannerEditComponent extends React.Component{
             .catch((error) => {
                 console.log(error," error")
                 this.setState({error: true});
-                console.log(this.state.error);
             })
     }
     deleteBanner=(e) => {
@@ -94,7 +107,32 @@ class BannerEditComponent extends React.Component{
         }
     }
 
+    renderMenuItem = (category) => {
+        return (
+            <MenuItem key={category.idRequest} value={category.idRequest}>
+                <Typography>{category.name}</Typography>
+            </MenuItem>
+        );
+    };
+
+
+    changeCategories= (event) => {
+
+        let arr =  event.target.value;
+        let newCategories = [];
+        for(let i=0;i<arr.length;i++){
+            let tmpIdRequest = arr[i]
+            for(let j=0;j<this.state.allCategories.length;j++){
+                if(this.state.allCategories[j].idRequest === tmpIdRequest){
+                    newCategories.push(this.state.allCategories[j]);
+                }
+            }
+        }
+        this.setState({currCategories: newCategories});
+    }
+
     render() {
+        const {currCategories,allCategories} = this.state;
         return (
             <section className="content">
                 <form>
@@ -121,13 +159,23 @@ class BannerEditComponent extends React.Component{
                             <div className="content__form-item">
                                 <div className="content__form-item-title">Category</div>
                                 <div className="content__form-item-content">
-                                    <select className="content__select" name="categories" multiple="multiple">
-                                        {/*<option th:each="element : ${categories}" th:value="${element.idCategory}"*/}
-                                        {/*        th:text="${element.name}"></option>*/}
-                                        <input className="content__input" type="text" name="categories"
-                                               value={this.state.categories}
-                                               onChange={this.changeCategories}/>
-                                    </select>
+                                    <div className="content__select">
+                                        <Select
+                                            multiple
+                                            labelId="demo-multiple-name-label"
+                                            id="demo-multiple-name"
+                                            value={currCategories.map(category => {
+                                                return category.idRequest
+                                            })}
+                                            fullWidth
+                                            input={<OutlinedInput label="name" />}
+                                            renderValue={(data) => <div>{data.join(", ")}</div>}
+                                            MenuProps={MenuProps}
+                                            onChange={this.changeCategories}
+                                        >
+                                            {allCategories.map(this.renderMenuItem)}
+                                        </Select>
+                                    </div>
                                 </div>
                             </div>
                             <div className="content__form-item">
