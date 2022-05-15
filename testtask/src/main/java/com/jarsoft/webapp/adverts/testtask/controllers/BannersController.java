@@ -37,13 +37,13 @@ public class BannersController {
         System.out.println(request.getRemoteAddr()); // IP ADDRESS
         System.out.println(request.getHeader("User-Agent"));
         Iterable<BannerEntity> banners = bannerRepository.findAllNotDeleted();
-        return StreamSupport.stream(banners.spliterator(), false)
-                .collect(Collectors.toList());
+        List<BannerEntity> output = StreamSupport.stream(banners.spliterator(), false).toList();
+        return output;
     }
 
     @GetMapping("/{bid}")
     public BannerEntity show(@PathVariable("bid") Long bid) {
-        BannerEntity currBanner = bannerRepository.findById(bid).orElseThrow();
+        BannerEntity currBanner = bannerRepository.findById(bid).orElseThrow(() -> new ResourceNotFoundException("Banner not exist with id :" + bid));
         return currBanner;
     }
 
@@ -62,7 +62,7 @@ public class BannersController {
             }
         }
 
-        BannerEntity banner = bannerRepository.findById(bid).orElseThrow();
+        BannerEntity banner = bannerRepository.findById(bid).orElseThrow(() -> new ResourceNotFoundException("Banner not exist with id :" + bid));
         banner.setName(bannerDetails.getName());
         banner.setPrice(bannerDetails.getPrice());
         banner.setText(bannerDetails.getText());
@@ -94,7 +94,7 @@ public class BannersController {
     @DeleteMapping("/{bid}")
     public ResponseEntity<Boolean> deleteBanner(@PathVariable Long bid){
         BannerEntity banner = bannerRepository.findById(bid)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not exist with id :" + bid));
+                .orElseThrow(() -> new ResourceNotFoundException("Banner not exist with id :" + bid));
         banner.setDeleted(true);
         bannerRepository.save(banner);
         return ResponseEntity.ok(true);
