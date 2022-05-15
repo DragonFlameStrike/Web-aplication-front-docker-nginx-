@@ -35,7 +35,7 @@ public class BannersController {
     @GetMapping("/search/")
     public List<BannerEntity> viewAllBanners(HttpServletRequest request) {
         System.out.println(request.getRemoteAddr()); // IP ADDRESS
-        System.out.println(request.getHeader("User-Agent")); // USER AGENT
+        System.out.println(request.getHeader("User-Agent"));
         Iterable<BannerEntity> banners = bannerRepository.findAllNotDeleted();
         return StreamSupport.stream(banners.spliterator(), false)
                 .collect(Collectors.toList());
@@ -80,13 +80,12 @@ public class BannersController {
 
 
     @PostMapping("/create")
-    public BannerEntity createBanner(@Valid @RequestBody BannerEntity newBanner) throws NotUniqueNameException {
-        Iterable<BannerEntity> banners = bannerRepository.findAll();
+    public BannerEntity createBanner(@Valid @RequestBody BannerEntity newBanner) throws NotUniqueNameException, BadNameException {
+        if(SqlInjectionSecurity.check(newBanner.getName())) throw new BadNameException();
+        Iterable<BannerEntity> banners = bannerRepository.findAllNotDeletedByName(newBanner.getName());
         for (BannerEntity banner: banners) {
-            if(banner.getDeleted() == null || !banner.getDeleted()) {
-                if (banner.getName().equals(newBanner.getName())) {
-                    throw new NotUniqueNameException();
-                }
+            if (banner.getName().equals(newBanner.getName())) {  //You should re-control result, because query used LOWERCASE context
+                throw new NotUniqueNameException();
             }
         }
         return bannerRepository.save(newBanner);
