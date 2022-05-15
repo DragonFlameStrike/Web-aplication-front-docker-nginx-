@@ -29,6 +29,11 @@ public class CategoryEntity {
         this.name=name;
         this.IdRequest=idRequest;
     }
+    public CategoryEntity(String name, String IdRequest,Long IdCategory) {
+        this.name=name;
+        this.IdRequest=IdRequest;
+        this.IdCategory=IdCategory;
+    }
 
     public Boolean getDeleted() {
         return deleted;

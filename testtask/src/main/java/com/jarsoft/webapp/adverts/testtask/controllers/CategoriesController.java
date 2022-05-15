@@ -2,9 +2,11 @@ package com.jarsoft.webapp.adverts.testtask.controllers;
 
 import com.jarsoft.webapp.adverts.testtask.entity.BannerEntity;
 import com.jarsoft.webapp.adverts.testtask.entity.CategoryEntity;
+import com.jarsoft.webapp.adverts.testtask.exception.BadNameException;
 import com.jarsoft.webapp.adverts.testtask.exception.NotUniqueNameException;
 import com.jarsoft.webapp.adverts.testtask.exception.ResourceNotFoundException;
 import com.jarsoft.webapp.adverts.testtask.repositories.CategoryRepository;
+import com.jarsoft.webapp.adverts.testtask.security.SqlInjectionSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,8 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @RestController()
@@ -24,29 +28,16 @@ public class CategoriesController {
 
     @GetMapping("/search/")
     public List<CategoryEntity> viewAllCategories(){
-        Iterable<CategoryEntity> categories = categoryRepository.findAll();
-        List<CategoryEntity> filteredCategories = new ArrayList<>();
-        for (CategoryEntity category: categories) {
-            if (category.getDeleted() == null || !category.getDeleted()) {
-                filteredCategories.add(category);
-            }
-        }
-        return filteredCategories;
+        Iterable<CategoryEntity> categories = categoryRepository.findAllNotDeleted();
+        return StreamSupport.stream(categories.spliterator(), false)
+                .collect(Collectors.toList());
     }
     @GetMapping("/search/{searchValue}")
-    public List<CategoryEntity> viewCertainCategories(@PathVariable String searchValue){
-        Iterable<CategoryEntity> categories = categoryRepository.findAll();
-        List<CategoryEntity> filteredCategories = new ArrayList<>();
-        for (CategoryEntity category: categories) {
-            if(category.getDeleted() == null || !category.getDeleted()) {
-                String name = category.getName().toLowerCase();
-                searchValue = searchValue.toLowerCase();
-                if (name.contains(searchValue)) {
-                    filteredCategories.add(category);
-                }
-            }
-        }
-        return filteredCategories;
+    public List<CategoryEntity> viewCertainCategories(@PathVariable String searchValue) throws BadNameException {
+        if(SqlInjectionSecurity.check(searchValue)) throw new BadNameException();
+        Iterable<CategoryEntity> categories = categoryRepository.findAllNotDeletedBySearch(searchValue.toLowerCase());
+        return StreamSupport.stream(categories.spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{cid}")
@@ -56,14 +47,21 @@ public class CategoriesController {
     }
 
     @PostMapping("/{cid}")
-    public ResponseEntity<CategoryEntity> updateCategory(@PathVariable Long cid, @Valid @RequestBody CategoryEntity categoryDetails) throws NotUniqueNameException {
-        Iterable<CategoryEntity> categories = categoryRepository.findAll();
-        for (CategoryEntity category: categories) {
-            if(!Objects.equals(category.getIdCategory(), cid) && (category.getDeleted() == null || !category.getDeleted())) {
-                if (category.getName().equals(categoryDetails.getName())) {
+    public ResponseEntity<CategoryEntity> updateCategory(@PathVariable Long cid, @Valid @RequestBody CategoryEntity categoryDetails) throws NotUniqueNameException, BadNameException {
+        if(SqlInjectionSecurity.check(categoryDetails.getName())) throw new BadNameException();
+        Iterable<CategoryEntity> categoriesByName = categoryRepository.findAllNotDeletedByName(categoryDetails.getName());
+        for (CategoryEntity category: categoriesByName) {
+            if(!Objects.equals(category.getIdCategory(), cid)) {
+                if (category.getName().equals(categoryDetails.getName())) {  //You should re-control result, because query used LOWERCASE context
                     throw new NotUniqueNameException();
                 }
-                if (category.getIdRequest().equals(categoryDetails.getIdRequest())) {
+            }
+        }
+        if(SqlInjectionSecurity.check(categoryDetails.getIdRequest())) throw new BadNameException();
+        Iterable<CategoryEntity> categoriesByIdRequest = categoryRepository.findAllNotDeletedByIdRequest(categoryDetails.getIdRequest());
+        for (CategoryEntity category: categoriesByIdRequest) {
+            if(!Objects.equals(category.getIdCategory(), cid)) {
+                if (category.getIdRequest().equals(categoryDetails.getIdRequest())) {  //You should re-control result, because query used LOWERCASE context
                     throw new NotUniqueNameException();
                 }
             }
@@ -81,16 +79,19 @@ public class CategoriesController {
     public String create() {return "";}
 
     @PostMapping("/create")
-    public CategoryEntity createCategory(@Valid @RequestBody CategoryEntity newCategory) throws NotUniqueNameException {
-        Iterable<CategoryEntity> categories = categoryRepository.findAll();
+    public CategoryEntity createCategory(@Valid @RequestBody CategoryEntity newCategory) throws NotUniqueNameException, BadNameException {
+        if(SqlInjectionSecurity.check(newCategory.getName())) throw new BadNameException();
+        Iterable<CategoryEntity> categories = categoryRepository.findAllNotDeletedByName(newCategory.getName());
         for (CategoryEntity category: categories) {
-            if(category.getDeleted() == null || !category.getDeleted()) {
-                if (category.getName().equals(newCategory.getName())) {
-                    throw new NotUniqueNameException();
-                }
-                if (category.getIdRequest().equals(newCategory.getIdRequest())) {
-                    throw new NotUniqueNameException();
-                }
+            if (category.getName().equals(newCategory.getName())) {  //You should re-control result, because query used LOWERCASE context
+                throw new NotUniqueNameException();
+            }
+        }
+        if(SqlInjectionSecurity.check(newCategory.getIdRequest())) throw new BadNameException();
+        Iterable<CategoryEntity> categoriesByIdRequest = categoryRepository.findAllNotDeletedByIdRequest(newCategory.getIdRequest());
+        for (CategoryEntity category: categoriesByIdRequest) {
+            if (category.getIdRequest().equals(newCategory.getIdRequest())) {  //You should re-control result, because query used LOWERCASE context
+                throw new NotUniqueNameException();
             }
         }
         return categoryRepository.save(newCategory);
