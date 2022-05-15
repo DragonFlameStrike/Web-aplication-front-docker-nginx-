@@ -42,7 +42,7 @@ public class CategoriesController {
 
     @GetMapping("/{cid}")
     public CategoryEntity show(@PathVariable("cid") Long cid) {
-        CategoryEntity currCategory = categoryRepository.findById(cid).orElseThrow();
+        CategoryEntity currCategory = categoryRepository.findById(cid).orElseThrow(() -> new ResourceNotFoundException("Category not exist with id :" + cid));
         return currCategory;
     }
 
@@ -66,7 +66,7 @@ public class CategoriesController {
                 }
             }
         }
-        CategoryEntity category = categoryRepository.findById(cid).orElseThrow();
+        CategoryEntity category = categoryRepository.findById(cid).orElseThrow(() -> new ResourceNotFoundException("Category not exist with id :" + cid));
         category.setName(categoryDetails.getName());
         category.setIdRequest(categoryDetails.getIdRequest());
         category.setDeleted(false);
@@ -99,7 +99,7 @@ public class CategoriesController {
     @DeleteMapping("/{cid}")
     public ResponseEntity<Boolean> deleteCategory(@PathVariable Long cid) throws NotUniqueNameException {
         CategoryEntity category = categoryRepository.findById(cid)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not exist with id :" + cid));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not exist with id :" + cid));
 //        if(){
 //            throw new NotUniqueNameException();
 //        }
