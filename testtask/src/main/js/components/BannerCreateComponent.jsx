@@ -1,8 +1,20 @@
 
 import BannerService from "../services/BannerService";
+import {InputLabel, MenuItem, OutlinedInput, Typography} from "@material-ui/core";
+import { Select } from "@material-ui/core";
+import CategoryService from "../services/CategoryService";
 
 const React = require("react");
-
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
 class BannerCreateComponent extends React.Component{
     constructor(props) {
         super(props)
@@ -12,14 +24,21 @@ class BannerCreateComponent extends React.Component{
             price: '',
             text: '',
             error: false,
-            categories: [],
-            sameNameError: false
+            currCategories: [],
+            sameNameError: false,
+            allCategories:[]
         }
         this.changeName = this.changeName.bind(this);
         this.changePrice = this.changePrice.bind(this);
         this.changeCategories = this.changeCategories.bind(this);
         this.changeText = this.changeText.bind(this);
         this.createBanner = this.createBanner.bind(this);
+    }
+
+    componentDidMount() {
+        CategoryService.getCategories("").then(listCategories => {
+            this.state.allCategories = listCategories.data;
+        })
     }
 
     changeName = (event) => {
@@ -31,7 +50,18 @@ class BannerCreateComponent extends React.Component{
     }
 
     changeCategories= (event) => {
-        this.setState({categories: event.target.value});
+
+        let arr =  event.target.value;
+        let newCategories = [];
+        for(let i=0;i<arr.length;i++){
+            let tmpIdRequest = arr[i]
+            for(let j=0;j<this.state.allCategories.length;j++){
+                if(this.state.allCategories[j].idRequest === tmpIdRequest){
+                    newCategories.push(this.state.allCategories[j]);
+                }
+            }
+        }
+        this.setState({currCategories: newCategories});
     }
     changeText= (event) => {
         this.setState({text: event.target.value});
@@ -40,7 +70,7 @@ class BannerCreateComponent extends React.Component{
         this.setState({ error: false});
         e.preventDefault();
         let banner = {name: this.state.name.toString(), price: parseInt(this.state.price),
-            categories: this.state.categories, text:this.state.text.toString()};
+            categories: this.state.currCategories, text:this.state.text.toString()};
         BannerService.createBanner(banner).then(res =>{
             console.log(this.state.error);
             if(this.state.error === false) {
@@ -71,7 +101,16 @@ class BannerCreateComponent extends React.Component{
         }
     }
 
+    renderMenuItem = (category) => {
+        return (
+            <MenuItem key={category.idRequest} value={category.idRequest}>
+                <Typography>{category.name}</Typography>
+            </MenuItem>
+        );
+    };
+
     render() {
+        const {currCategories,allCategories} = this.state;
         return (
             <section className="content">
                 <form>
@@ -98,13 +137,23 @@ class BannerCreateComponent extends React.Component{
                             <div className="content__form-item">
                                 <div className="content__form-item-title">Category</div>
                                 <div className="content__form-item-content">
-                                    <select className="content__select" name="categories" multiple="multiple">
-                                        {/*<option th:each="element : ${categories}" th:value="${element.idCategory}"*/}
-                                        {/*        th:text="${element.name}"></option>*/}
-                                        <input className="content__input" type="text" name="categories"
-                                               value={this.state.categories}
-                                               onChange={this.changeCategories}/>
-                                    </select>
+                                    <div className="content__select">
+                                        <Select
+                                            multiple
+                                            labelId="demo-multiple-name-label"
+                                            id="demo-multiple-name"
+                                            value={currCategories.map(category => {
+                                                return category.idRequest
+                                            })}
+                                            fullWidth
+                                            input={<OutlinedInput label="name" />}
+                                            renderValue={(data) => <div>{data.join(", ")}</div>}
+                                            MenuProps={MenuProps}
+                                            onChange={this.changeCategories}
+                                        >
+                                            {allCategories.map(this.renderMenuItem)}
+                                        </Select>
+                                    </div>
                                 </div>
                             </div>
                             <div className="content__form-item">
