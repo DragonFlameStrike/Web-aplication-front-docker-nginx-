@@ -15,7 +15,7 @@ class CategoryEditComponent extends React.Component{
             oldname: '',
             error: false,
             idRequest: '',
-            sameNameError: false
+            wrongDeleteError: false
 
         }
         this.changeName = this.changeName.bind(this);
@@ -63,7 +63,11 @@ class CategoryEditComponent extends React.Component{
         CategoryService.deleteCategory(this.state.id).then( res => {
             this.props.history.push('/categories/');
             window.location.reload();
-        });
+        })
+            .catch((error) => {
+                this.setState({wrongDeleteError: true});
+                console.log(this.state.error);
+            })
     }
     errorView = (e) => {
         if(this.state.error === true){
@@ -73,10 +77,10 @@ class CategoryEditComponent extends React.Component{
                 </div>
             )
         }
-        if(this.state.sameNameError){
+        if(this.state.wrongDeleteError){
             return (
                 <div className="error">
-                    <span className="error__text">Banner with name "some banner" is already exist</span>
+                    <span className="error__text">You can't delete this category, because banner(s) associated with this category</span>
                 </div>
             )
         }

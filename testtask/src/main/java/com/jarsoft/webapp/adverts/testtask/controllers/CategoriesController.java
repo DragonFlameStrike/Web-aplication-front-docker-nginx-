@@ -5,8 +5,10 @@ import com.jarsoft.webapp.adverts.testtask.entity.CategoryEntity;
 import com.jarsoft.webapp.adverts.testtask.exception.BadNameException;
 import com.jarsoft.webapp.adverts.testtask.exception.NotUniqueNameException;
 import com.jarsoft.webapp.adverts.testtask.exception.ResourceNotFoundException;
+import com.jarsoft.webapp.adverts.testtask.exception.WrongDeleteException;
 import com.jarsoft.webapp.adverts.testtask.repositories.CategoryRepository;
 import com.jarsoft.webapp.adverts.testtask.security.SqlInjectionSecurity;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,7 @@ public class CategoriesController {
     }
     @GetMapping("/search/{searchValue}")
     public List<CategoryEntity> viewCertainCategories(@PathVariable String searchValue) throws BadNameException {
+
         if(SqlInjectionSecurity.check(searchValue)) throw new BadNameException();
         Iterable<CategoryEntity> categories = categoryRepository.findAllNotDeletedBySearch(searchValue.toLowerCase());
         return StreamSupport.stream(categories.spliterator(), false)
@@ -41,7 +44,8 @@ public class CategoriesController {
     }
 
     @GetMapping("/{cid}")
-    public CategoryEntity show(@PathVariable("cid") Long cid) {
+    public CategoryEntity show(@PathVariable("cid") Long cid) throws BadNameException {
+        if(SqlInjectionSecurity.check(String.valueOf(cid))) throw new BadNameException();
         CategoryEntity currCategory = categoryRepository.findById(cid).orElseThrow(() -> new ResourceNotFoundException("Category not exist with id :" + cid));
         return currCategory;
     }
@@ -49,6 +53,7 @@ public class CategoriesController {
     @PostMapping("/{cid}")
     public ResponseEntity<CategoryEntity> updateCategory(@PathVariable Long cid, @Valid @RequestBody CategoryEntity categoryDetails) throws NotUniqueNameException, BadNameException {
         if(SqlInjectionSecurity.check(categoryDetails.getName())) throw new BadNameException();
+        if(SqlInjectionSecurity.check(String.valueOf(cid))) throw new BadNameException();
         Iterable<CategoryEntity> categoriesByName = categoryRepository.findAllNotDeletedByName(categoryDetails.getName());
         for (CategoryEntity category: categoriesByName) {
             if(!Objects.equals(category.getIdCategory(), cid)) {
@@ -96,15 +101,22 @@ public class CategoriesController {
         }
         return categoryRepository.save(newCategory);
     }
+
     @DeleteMapping("/{cid}")
-    public ResponseEntity<Boolean> deleteCategory(@PathVariable Long cid) throws NotUniqueNameException {
-        CategoryEntity category = categoryRepository.findById(cid)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not exist with id :" + cid));
-//        if(){
-//            throw new NotUniqueNameException();
-//        }
-        category.setDeleted(true);
-        categoryRepository.save(category);
+    public ResponseEntity<Boolean> deleteCategory(@PathVariable Long cid) throws WrongDeleteException, BadNameException {
+        if(SqlInjectionSecurity.check(String.valueOf(cid))) throw new BadNameException();
+        CategoryEntity currCategory = categoryRepository.findById(cid).orElseThrow(() -> new ResourceNotFoundException("Category not exist with id :" + cid));
+        List<BannerEntity> AssociateBanners = currCategory.getBanners();
+        if(!AssociateBanners.isEmpty()){
+            for (BannerEntity banner:
+                 AssociateBanners) {
+                if(!banner.getDeleted()){
+                    throw new WrongDeleteException();
+                }
+            }
+        }
+        currCategory.setDeleted(true);
+        categoryRepository.save(currCategory);
         return ResponseEntity.ok(true);
     }
 }
