@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller()
+@RequestMapping(value = "/root")
 public class BannerViewController {
     @RequestMapping(value = "/")
     public String startPage() {

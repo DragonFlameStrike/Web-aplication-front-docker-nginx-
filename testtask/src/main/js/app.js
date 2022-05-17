@@ -27,12 +27,12 @@ class  MainFieldApp extends React.Component {
                 <Router>
 
                     <Switch>
-                        <Route path="/categories/create" component={CategoryCreateComponent}/>
-                        <Route path="/categories/:cid" component={CategoryEditComponent}/>
-                        <Route path="/categories/" component={EmptyFieldComponent}/>
-                        <Route path="/create" component={BannerCreateComponent}/>
-                        <Route path="/:bid" component={BannerEditComponent}/>
-                        <Route path="/" exact component={EmptyFieldComponent}/>
+                        <Route path="/root/categories/create" component={CategoryCreateComponent}/>
+                        <Route path="/root/categories/:cid" component={CategoryEditComponent}/>
+                        <Route path="/root/categories/" component={EmptyFieldComponent}/>
+                        <Route path="/root/create" component={BannerCreateComponent}/>
+                        <Route path="/root/:bid" component={BannerEditComponent}/>
+                        <Route path="/root/" exact component={EmptyFieldComponent}/>
                     </Switch>
 
                 </Router>

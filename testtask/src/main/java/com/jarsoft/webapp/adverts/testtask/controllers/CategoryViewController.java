@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller()
-@RequestMapping("/categories")
+@RequestMapping("/root/categories")
 public class CategoryViewController {
     @RequestMapping(value = "/")
     public String startPage() {
