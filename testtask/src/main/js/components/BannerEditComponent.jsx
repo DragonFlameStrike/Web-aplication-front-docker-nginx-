@@ -74,7 +74,7 @@ class BannerEditComponent extends React.Component{
         BannerService.updateBanner(banner, this.state.id)
             .then((response) => {
                 if(this.state.error === false) {
-                    this.props.history.push('/');
+                    this.props.history.push('/root/');
                     window.location.reload();
                 }
             })
@@ -86,7 +86,7 @@ class BannerEditComponent extends React.Component{
     deleteBanner=(e) => {
         e.preventDefault();
         BannerService.deleteBanner(this.state.id).then( res => {
-            this.props.history.push('/');
+            this.props.history.push('/root/');
             window.location.reload();
         });
     }

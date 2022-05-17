@@ -23,7 +23,7 @@ import java.util.stream.StreamSupport;
 
 
 @RestController()
-@RequestMapping("/api/categories")
+@RequestMapping("/root/api/categories")
 public class CategoriesController {
     @Autowired
     private CategoryRepository categoryRepository;

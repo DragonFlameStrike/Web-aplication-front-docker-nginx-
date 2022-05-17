@@ -74,7 +74,7 @@ class BannerCreateComponent extends React.Component{
         BannerService.createBanner(banner).then(res =>{
             console.log(this.state.error);
             if(this.state.error === false) {
-                this.props.history.push('/');
+                this.props.history.push('/root/');
                 window.location.reload();
             }
         })
@@ -171,7 +171,6 @@ class BannerCreateComponent extends React.Component{
                             <button type="submit" className="content__button content__button_dark"
                                     onClick={this.createBanner}>Save
                             </button>
-                            {/*<button class="content__button content__button_red">Delete</button>*/}
                         </div>
                     </footer>
                     {this.errorView()}

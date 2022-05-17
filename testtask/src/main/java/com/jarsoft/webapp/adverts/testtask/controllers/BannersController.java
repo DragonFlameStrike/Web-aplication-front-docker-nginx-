@@ -20,7 +20,7 @@ import java.util.stream.StreamSupport;
 
 
 @RestController()
-@RequestMapping("/api")
+@RequestMapping("/root/api")
 public class BannersController {
     @Autowired
     private BannerRepository bannerRepository;

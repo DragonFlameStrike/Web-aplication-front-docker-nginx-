@@ -35,7 +35,7 @@ class CategoryCreateComponent extends React.Component{
         CategoryService.createCategory(category).then(res =>{
             console.log(this.state.error);
             if(this.state.error === false) {
-                this.props.history.push('/categories/');
+                this.props.history.push('/root/categories/');
                 window.location.reload();
             }
         })

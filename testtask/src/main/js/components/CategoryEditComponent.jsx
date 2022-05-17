@@ -48,7 +48,7 @@ class CategoryEditComponent extends React.Component{
         CategoryService.updateCategory(category, this.state.id).then( res => {
             console.log(this.state.error);
             if(this.state.error === false) {
-                this.props.history.push('/categories/');
+                this.props.history.push('/root/categories/');
                 window.location.reload();
             }
         })
@@ -61,7 +61,7 @@ class CategoryEditComponent extends React.Component{
     deleteCategory=(e) => {
         e.preventDefault();
         CategoryService.deleteCategory(this.state.id).then( res => {
-            this.props.history.push('/categories/');
+            this.props.history.push('/root/categories/');
             window.location.reload();
         })
             .catch((error) => {
