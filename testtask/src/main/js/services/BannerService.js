@@ -1,7 +1,9 @@
 
 import axios from "axios";
 
-const BANNER_API_BASE_URL = "http://localhost:8080/root/api/"
+
+
+const BANNER_API_BASE_URL = "http://" + window.location.hostname +":8080/root/api/"
 
 class BannerService{
     getBanners(searchValue){

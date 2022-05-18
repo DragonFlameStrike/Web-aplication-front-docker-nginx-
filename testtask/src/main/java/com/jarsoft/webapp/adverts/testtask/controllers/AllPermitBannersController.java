@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
 
 @RestController()
 @RequestMapping("/bid")
 public class AllPermitBannersController {
+    public static final Long ONE_DAY = 86400000L;
     @Autowired
     private BannerRepository bannerRepository;
     @Autowired
@@ -31,6 +34,13 @@ public class AllPermitBannersController {
                         .anyMatch(category -> cat.stream().anyMatch(str -> str.trim().equals(category.getIdRequest()))) && !banner.getDeleted()).toList();
 
 
+
+        Long time = new Date().getTime();
+        Iterable<LogEntity> logsIterable = logRepository.findAllByIp(request.getRemoteAddr(),request.getHeader("User-Agent"));
+        List<LogEntity> logs = StreamSupport.stream(logsIterable.spliterator(), false).collect(Collectors.toList())
+                .stream().filter(logEntity -> !logEntity.getNoContentReason())
+                .filter(logEntity -> time-logEntity.getTime() < ONE_DAY).toList();
+        BannersWithCategories=BannersWithCategories.stream().filter(banner -> logs.stream().noneMatch(log -> log.getIdBanner().equals(banner.getIdBanner()))).toList();
 
         LogEntity log = new LogEntity();
         if(BannersWithCategories.isEmpty()) {

@@ -19,6 +19,22 @@ public class LogEntity {
     public LogEntity() {
     }
 
+
+    public LogEntity(String ipAddress, String userAgent, Long time, Long idBanner, Boolean noContentReason) {
+        this.ipAddress = ipAddress;
+        this.userAgent = userAgent;
+        this.time = time;
+        this.idBanner = idBanner;
+        this.noContentReason = noContentReason;
+    }
+
+    public LogEntity(String ipAddress, String userAgent, Long idBanner, Boolean noContentReason) {
+        this.ipAddress = ipAddress;
+        this.userAgent = userAgent;
+        this.idBanner = idBanner;
+        this.noContentReason = noContentReason;
+    }
+
     public Long getIdLog() {
         return idLog;
     }
