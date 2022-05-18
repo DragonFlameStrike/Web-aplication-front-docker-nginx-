@@ -34,8 +34,6 @@ public class BannersController {
     }
     @GetMapping("/search/")
     public List<BannerEntity> viewAllBanners(HttpServletRequest request) {
-        System.out.println(request.getRemoteAddr()); // IP ADDRESS
-        System.out.println(request.getHeader("User-Agent"));
         Iterable<BannerEntity> banners = bannerRepository.findAllNotDeleted();
         List<BannerEntity> output = StreamSupport.stream(banners.spliterator(), false).toList();
         return output;
