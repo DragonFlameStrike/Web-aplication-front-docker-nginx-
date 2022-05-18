@@ -1,7 +1,10 @@
 package com.jarsoft.webapp.adverts.testtask.controllers;
 
 import com.jarsoft.webapp.adverts.testtask.entity.BannerEntity;
+import com.jarsoft.webapp.adverts.testtask.entity.LogEntity;
 import com.jarsoft.webapp.adverts.testtask.repositories.BannerRepository;
+import com.jarsoft.webapp.adverts.testtask.repositories.LogRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,23 +19,39 @@ import java.util.stream.StreamSupport;
 public class AllPermitBannersController {
     @Autowired
     private BannerRepository bannerRepository;
+    @Autowired
+    private LogRepository logRepository;
 
     @GetMapping("")
     public Optional<BannerEntity> viewBannerWithCategory(HttpServletRequest request, HttpServletResponse response, @RequestParam List<String> cat) {
-        System.out.println(request.getRemoteAddr()); // IP ADDRESS
-        System.out.println(request.getHeader("User-Agent"));
-        System.out.println(cat);
-        Optional<BannerEntity> finilBanner = null;
+        Optional<BannerEntity> finalBanner = Optional.empty();
         Iterable<BannerEntity> banners = bannerRepository.findAll();
         List<BannerEntity> BannersWithCategories = StreamSupport.stream(banners.spliterator(), false)
                 .filter(banner -> banner.getCategories().stream()
                         .anyMatch(category -> cat.stream().anyMatch(str -> str.trim().equals(category.getIdRequest()))) && !banner.getDeleted()).toList();
 
 
-        if(BannersWithCategories.isEmpty()) response.setStatus( HttpStatus.SC_NO_CONTENT);
-        else{
-            finilBanner = BannersWithCategories.stream().max(Comparator.comparing(BannerEntity::getPrice));
+
+        LogEntity log = new LogEntity();
+        if(BannersWithCategories.isEmpty()) {
+            response.setStatus( HttpStatus.SC_NO_CONTENT);
+            log.setIpAddress(request.getRemoteAddr());
+            log.setUserAgent(request.getHeader("User-Agent"));
+            log.setTime(new Date().getTime());
+            log.setCategories(StringUtils.join(cat, ","));
+            log.setNoContentReason(true);
         }
-        return finilBanner;
+        else{
+            finalBanner = BannersWithCategories.stream().max(Comparator.comparing(BannerEntity::getPrice));
+            log.setIpAddress(request.getRemoteAddr());
+            log.setUserAgent(request.getHeader("User-Agent"));
+            log.setTime(new Date().getTime());
+            log.setCategories(StringUtils.join(cat, ","));
+            log.setNoContentReason(false);
+            log.setIdBanner(finalBanner.get().getIdBanner());
+            log.setPrice(finalBanner.get().getPrice());
+        }
+        logRepository.save(log);
+        return finalBanner;
     }
 }
