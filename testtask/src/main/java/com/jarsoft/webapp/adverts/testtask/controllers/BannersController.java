@@ -9,22 +9,37 @@ import com.jarsoft.webapp.adverts.testtask.security.SqlInjectionSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 
+/**
+ * <h1>This RestController exists to work with banners and return some information to BannerService</h1>
+ *
+ */
 @RestController()
 @RequestMapping("/root/api")
 public class BannersController {
-    @Autowired
     private BannerRepository bannerRepository;
+    @Autowired
+    public void setBannerRepository(BannerRepository bannerRepository) {
+        this.bannerRepository = bannerRepository;
+    }
 
+
+    /**
+     * <h1>This function called by BannerService to get Banners by name</h1>
+     *
+     * @param searchValue PathVariable
+     * @return List<BannerEntity> filtered by searchValue
+     * @throws BadNameException if searchValue contains bad symbols
+     * @see SqlInjectionSecurity
+     * @see <a href="..src/main/js/services/BannerService.js">src/main/js/services/BannerService.js</a>
+     */
     @GetMapping("/search/{searchValue}")
     public List<BannerEntity> viewCertainBanners(@PathVariable String searchValue) throws BadNameException {
         if(SqlInjectionSecurity.check(searchValue)) throw new BadNameException();
@@ -32,20 +47,43 @@ public class BannersController {
         return StreamSupport.stream(banners.spliterator(), false)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * <h1>This function called by BannerService to get all not deleted Banners</h1>
+     *
+     * @see <a href="..src/main/js/services/BannerService.js">src/main/js/services/BannerService.js</a>
+     * @return {@code List<BannerEntity>} not deleted banners from banner_entity table
+     *
+     */
     @GetMapping("/search/")
-    public List<BannerEntity> viewAllBanners(HttpServletRequest request) {
+    public List<BannerEntity> viewAllBanners() {
         Iterable<BannerEntity> banners = bannerRepository.findAllNotDeleted();
-        List<BannerEntity> output = StreamSupport.stream(banners.spliterator(), false).toList();
-        return output;
+        return StreamSupport.stream(banners.spliterator(), false).toList();
     }
 
+    /**
+     * <h1>This function called by BannerService to get Banner by id</h1>
+     *
+     * @param bid BannerEntity.IdBanner
+     * @return BannerEntity or ResourceNotFoundException
+     */
     @GetMapping("/{bid}")
-    public BannerEntity show(@PathVariable("bid") Long bid) {
-        BannerEntity currBanner = bannerRepository.findById(bid).orElseThrow(() -> new ResourceNotFoundException("Banner not exist with id :" + bid));
-        return currBanner;
+    public BannerEntity viewEditBannerField(@PathVariable("bid") Long bid) {
+        return bannerRepository.findById(bid).orElseThrow(() -> new ResourceNotFoundException("Banner not exist with id :" + bid));
     }
 
 
+    /**
+     * <h1>This function called by BannerService to update Banner by id</h1>
+     *
+     * @param bid BannerEntity.IdBanner
+     * @param bannerDetails new BannerEntity
+     * @return ResponseEntity
+     * @throws NotUniqueNameException if banner with same name already exist
+     * @throws BadNameException if new BannerEntity.name contains bad symbols
+     * @see SqlInjectionSecurity
+     * @see <a href="..src/main/js/services/BannerService.js">src/main/js/services/BannerService.js</a>
+     */
     @PostMapping("/{bid}")
     public ResponseEntity<BannerEntity> updateBanner(@PathVariable Long bid,
                                                      @Valid @RequestBody BannerEntity bannerDetails) throws NotUniqueNameException, BadNameException {
@@ -71,12 +109,17 @@ public class BannersController {
         return ResponseEntity.ok(updatedBannerEntity);
     }
 
-    @GetMapping("/create")
-    public String create() {
-        return "";
-    }
 
-
+    /**
+     * <h1>This function called by BannerService to create Banner</h1>
+     *
+     * @param newBanner BannerEntity with completed fields
+     * @return BannerEntity which was created
+     * @throws NotUniqueNameException if banner with same name already exist
+     * @throws BadNameException if new BannerEntity.name contains bad symbols
+     * @see SqlInjectionSecurity
+     * @see <a href="..src/main/js/services/BannerService.js">src/main/js/services/BannerService.js</a>
+     */
     @PostMapping("/create")
     public BannerEntity createBanner(@Valid @RequestBody BannerEntity newBanner) throws NotUniqueNameException, BadNameException {
         if(SqlInjectionSecurity.check(newBanner.getName())) throw new BadNameException();
@@ -89,6 +132,14 @@ public class BannersController {
         return bannerRepository.save(newBanner);
     }
 
+    /**
+     * <h1>This function called by BannerService to delete Banner by id</h1>
+     *
+     * @param bid Banner id which will be deleted
+     * @return ResponseEntity
+     * @throws ResourceNotFoundException if Banner with such bid not exist
+     * @see <a href="..src/main/js/services/BannerService.js">src/main/js/services/BannerService.js</a>
+     */
     @DeleteMapping("/{bid}")
     public ResponseEntity<Boolean> deleteBanner(@PathVariable Long bid){
         BannerEntity banner = bannerRepository.findById(bid)
