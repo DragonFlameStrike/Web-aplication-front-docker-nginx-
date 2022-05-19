@@ -6,7 +6,6 @@ import com.jarsoft.webapp.adverts.testtask.exception.BadNameException;
 import com.jarsoft.webapp.adverts.testtask.exception.NotUniqueNameException;
 import com.jarsoft.webapp.adverts.testtask.exception.ResourceNotFoundException;
 import com.jarsoft.webapp.adverts.testtask.exception.WrongDeleteException;
-import com.jarsoft.webapp.adverts.testtask.repositories.BannerRepository;
 import com.jarsoft.webapp.adverts.testtask.repositories.CategoryRepository;
 import com.jarsoft.webapp.adverts.testtask.security.SqlInjectionSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
