@@ -1,4 +1,4 @@
 package com.jarsoft.webapp.adverts.testtask.exception;
 
-public class BadNameException extends Throwable{
+public class BadNameException extends RuntimeException{
 }
