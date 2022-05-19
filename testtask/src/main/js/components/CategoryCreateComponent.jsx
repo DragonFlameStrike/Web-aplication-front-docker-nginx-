@@ -52,13 +52,6 @@ class CategoryCreateComponent extends React.Component{
                 </div>
             )
         }
-        if(this.state.sameNameError){
-            return (
-                <div className="error">
-                    <span className="error__text">Banner with name "some banner" is already exist</span>
-                </div>
-            )
-        }
     }
 
     render() {
@@ -94,9 +87,6 @@ class CategoryCreateComponent extends React.Component{
                             </button>
                         </div>
                     </footer>
-                    <div className="error">
-                        <span className="error__text">Category with name "some category" is already exist</span>
-                    </div>
                 </form>
                 {this.errorView()}
             </section>
