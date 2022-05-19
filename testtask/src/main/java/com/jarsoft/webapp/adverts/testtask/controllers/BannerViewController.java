@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * <h1>This class return html page, which caught by app.js and edited</h1>
+ * <h1>This Controller return html page, which caught by app.js and edited</h1>
  */
 @Controller()
 @RequestMapping(value = "/root")
