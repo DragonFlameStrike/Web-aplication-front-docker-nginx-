@@ -17,9 +17,9 @@ You must follow these steps to run the web application correctly:
 ### Guides
 The following guides illustrate how to use some features concretely:
 
-* [Root main page](https://localhost:8080/root/)
+* [Root main page](http://localhost:8080/root/)
 * You can be redirected to login page, then enter login:root password:root
 * Non-authorized user can get high cost banner by category.idRequest
-* For example https://localhost:8080/bid?cat=cat1&cat=cat2
+* For example http://localhost:8080/bid?cat=cat1&cat=cat2
 * Hint: User with the same IP and User-Agent should not see the previously shown banner on the same day.
 
