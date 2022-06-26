@@ -31,12 +31,10 @@ public class AllPermitBannersController {
     public void setBannerRepository(BannerRepository bannerRepository) {
         this.bannerRepository = bannerRepository;
     }
-    private LogRepository logRepository;
     @Autowired
     public void setLogRepository(LogRepository logRepository) {
-        this.logRepository = logRepository;
+        LogOperations.logRepository = logRepository;
     }
-
     /**
      * <h1>This function catch query, filters all banners by params and create LogEntity for log table</h1>
      *
@@ -57,35 +55,52 @@ public class AllPermitBannersController {
 
 
         Long time = new Date().getTime();
-        Iterable<LogEntity> logsIterable = logRepository.findAllByIp(request.getRemoteAddr(),request.getHeader("User-Agent"));
-        // Filter logs by time
-        List<LogEntity> logs = StreamSupport.stream(logsIterable.spliterator(), false).toList()
-                .stream().filter(logEntity -> !logEntity.getNoContentReason())
-                .filter(logEntity -> time-logEntity.getTime() < ONE_DAY).toList();
+        Iterable<LogEntity> logsIterable = LogOperations.getLogsByIpAndUA(request);
+        List<LogEntity> logs = LogOperations.filterLogsByTime(logsIterable,time);
         // Filter banners by logs
         BannersWithCategories=BannersWithCategories.stream().filter(banner -> logs.stream().noneMatch(log -> log.getIdBanner().equals(banner.getIdBanner()))).toList();
 
-        // Create new log to insert into log table
-        LogEntity log = new LogEntity();
-        if(BannersWithCategories.isEmpty()) {
-            response.setStatus( HttpStatus.SC_NO_CONTENT);
-            log.setIpAddress(request.getRemoteAddr());
-            log.setUserAgent(request.getHeader("User-Agent"));
-            log.setTime(new Date().getTime());
-            log.setCategories(StringUtils.join(cat, ","));
-            log.setNoContentReason(true);
+        boolean successQuery = !BannersWithCategories.isEmpty();
+        if(successQuery) {
+            finalBanner = BannersWithCategories.stream().max(Comparator.comparing(BannerEntity::getPrice));
+            LogOperations.createSuccessLogEntity(request, cat,finalBanner.get().getIdBanner(),finalBanner.get().getPrice());
         }
         else{
-            finalBanner = BannersWithCategories.stream().max(Comparator.comparing(BannerEntity::getPrice));
+            response.setStatus( HttpStatus.SC_NO_CONTENT);
+            LogOperations.createNotSuccessLogEntity(request, cat);
+        }
+        return finalBanner;
+    }
+    static class LogOperations {
+        private static LogRepository logRepository;
+        public static Iterable<LogEntity> getLogsByIpAndUA(HttpServletRequest request){
+            return logRepository.findAllByIp(request.getRemoteAddr(),request.getHeader("User-Agent"));
+        }
+        public static List<LogEntity> filterLogsByTime(Iterable<LogEntity> logsIterable,Long time){
+            return StreamSupport.stream(logsIterable.spliterator(), false).toList()
+                    .stream().filter(logEntity -> !logEntity.getNoContentReason())
+                    .filter(logEntity -> time-logEntity.getTime() < ONE_DAY).toList();
+        }
+        public static void createSuccessLogEntity(HttpServletRequest request,List<String> categoriesInQuery,Long idBanner,Long price){
+            LogEntity log = new LogEntity();
             log.setIpAddress(request.getRemoteAddr());
             log.setUserAgent(request.getHeader("User-Agent"));
             log.setTime(new Date().getTime());
-            log.setCategories(StringUtils.join(cat, ","));
+            log.setCategories(StringUtils.join(categoriesInQuery, ","));
             log.setNoContentReason(false);
-            log.setIdBanner(finalBanner.get().getIdBanner());
-            log.setPrice(finalBanner.get().getPrice());
+            log.setIdBanner(idBanner);
+            log.setPrice(price);
+            logRepository.save(log);
         }
-        logRepository.save(log);
-        return finalBanner;
+        public static void createNotSuccessLogEntity(HttpServletRequest request,List<String> categoriesInQuery){
+            LogEntity log = new LogEntity();
+            log.setIpAddress(request.getRemoteAddr());
+            log.setUserAgent(request.getHeader("User-Agent"));
+            log.setTime(new Date().getTime());
+            log.setCategories(StringUtils.join(categoriesInQuery, ","));
+            log.setNoContentReason(true);
+            logRepository.save(log);
+        }
     }
 }
+
