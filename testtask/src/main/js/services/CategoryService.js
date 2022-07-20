@@ -22,7 +22,7 @@ class CategoryService{
     }
     deleteCategory(id){
         console.log(id,"delete")
-        return axios.delete(CATEGORY_API_BASE_URL + id);
+        return axios.post(CATEGORY_API_BASE_URL + id + '/delete');
     }
 }
 

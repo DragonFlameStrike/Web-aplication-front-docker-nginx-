@@ -26,7 +26,7 @@ class BannerService{
     }
     deleteBanner(id){
         console.log(id,"delete")
-        return axios.delete(BANNER_API_BASE_URL + id);
+        return axios.post(BANNER_API_BASE_URL + id + "/delete");
     }
 }
 
